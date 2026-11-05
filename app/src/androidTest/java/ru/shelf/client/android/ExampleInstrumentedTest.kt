@@ -1,4 +1,4 @@
-package ru.shelf
+package ru.shelf.client.android
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

@@ -1,4 +1,4 @@
-package ru.shelf
+package ru.shelf.client.android
 
 import org.junit.Test
 

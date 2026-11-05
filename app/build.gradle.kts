@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.shelf"
+    namespace = "ru.shelf.client.android"
     compileSdk {
         version = release(36) {
             minorApiLevel = 1
@@ -12,7 +12,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "ru.shelf"
+        applicationId = "ru.shelf.client.android"
         minSdk = 29
         targetSdk = 36
         versionCode = 1
