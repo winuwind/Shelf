@@ -65,11 +65,13 @@ fun AppBottomNavigationBar(
     pendingTargetRoute: String? = null,
     onTabSelected: (BottomNavItem) -> Unit
 ) {
-    // В момент открытия окон входа/регистрации/подтверждения выбрана кнопка Профиль (или затребованный маршрут)
     val activeRoute = when (currentRoute) {
         Routes.SignIn.route,
         Routes.SignUp.route,
         Routes.Registration.route,
+        Routes.RestoreAccess.route,
+        Routes.ChangePassword.route,
+        Routes.Faq.route,
         Routes.EmailSentSuccess.route,
         Routes.EmailSentError.route,
         Routes.EmailVerifySuccess.route,

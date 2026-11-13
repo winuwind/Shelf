@@ -22,7 +22,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import ru.shelf.client.android.data.mockUserMe
+import ru.shelf.client.android.ui.screens.account.ChangePasswordScreen
+import ru.shelf.client.android.ui.screens.account.RestoreAccessScreen
 import ru.shelf.client.android.ui.screens.account.SignInScreen
+import ru.shelf.client.android.ui.screens.help.FaqScreen
 import ru.shelf.client.android.ui.screens.profile.OtherProfileScreen
 import ru.shelf.client.android.ui.screens.registration.EmailSentErrorScreen
 import ru.shelf.client.android.ui.screens.registration.EmailSentSuccessScreen
@@ -82,22 +85,18 @@ fun AppNavGraph(
                 navController = navController,
                 startDestination = Routes.Catalog.route
             ) {
-                // 1. Каталог
                 composable(Routes.Catalog.route) {
                     CatalogPlaceholderScreen()
                 }
 
-                // 2. Поиск
                 composable(Routes.Search.route) {
                     SearchPlaceholderScreen()
                 }
 
-                // 3. Сообщения (Требует авторизации)
                 composable(Routes.Messages.route) {
                     MessagesPlaceholderScreen()
                 }
 
-                // 4. Профиль (Требует авторизации)
                 composable(Routes.Profile.route) {
                     OtherProfileScreen(
                         user = mockUserMe,
@@ -105,7 +104,6 @@ fun AppNavGraph(
                     )
                 }
 
-                // 5. Вход в систему
                 composable(Routes.SignIn.route) {
                     SignInScreen(
                         onSignInSuccess = {
@@ -119,11 +117,16 @@ fun AppNavGraph(
                         },
                         onNavigateToSignUp = {
                             navController.navigate(Routes.Registration.route)
+                        },
+                        onNavigateToRestoreAccess = {
+                            navController.navigate(Routes.RestoreAccess.route)
+                        },
+                        onNavigateToFaq = {
+                            navController.navigate(Routes.Faq.route)
                         }
                     )
                 }
 
-                // 6. Экран регистрации
                 composable(Routes.Registration.route) {
                     RegistrationScreen(
                         onRegisterSuccess = {
@@ -140,9 +143,49 @@ fun AppNavGraph(
                     )
                 }
 
-                // 7. Подтверждение отправки письма (Успех)
+                composable(Routes.RestoreAccess.route) {
+                    RestoreAccessScreen(
+                        onSendRestoreEmailClick = {
+                            navController.navigate(Routes.EmailSentSuccess.route)
+                        },
+                        onNavigateBack = {
+                            navController.popBackStack()
+                        }
+                    )
+                }
+
+                composable(Routes.ChangePassword.route) {
+                    ChangePasswordScreen(
+                        onChangePasswordSuccess = {
+                            navController.navigate(Routes.SignIn.route) {
+                                popUpTo(Routes.SignIn.route) { inclusive = true }
+                            }
+                        },
+                        onNavigateToSignIn = {
+                            navController.navigate(Routes.SignIn.route) {
+                                popUpTo(Routes.SignIn.route) { inclusive = true }
+                            }
+                        }
+                    )
+                }
+
+                composable(Routes.Faq.route) {
+                    FaqScreen(
+                        onNavigateBack = {
+                            navController.popBackStack()
+                        },
+                        onNavigateToRestoreAccess = {
+                            navController.navigate(Routes.RestoreAccess.route)
+                        },
+                        onNavigateToSupport = {
+                            navController.navigate(Routes.ChangePassword.route)
+                        }
+                    )
+                }
+
                 composable(Routes.EmailSentSuccess.route) {
                     EmailSentSuccessScreen(
+                        time = remember { mutableStateOf("01:23:45") },
                         onCloseClick = {
                             navController.navigate(Routes.SignIn.route) {
                                 popUpTo(Routes.SignIn.route) { inclusive = true }
@@ -151,21 +194,16 @@ fun AppNavGraph(
                     )
                 }
 
-                // 8. Ошибка отправки письма
                 composable(Routes.EmailSentError.route) {
                     EmailSentErrorScreen(
                         onOkClick = {
                             navController.navigate(Routes.SignIn.route) {
                                 popUpTo(Routes.SignIn.route) { inclusive = true }
                             }
-                        },
-                        onNavigateBack = {
-                            navController.popBackStack()
                         }
                     )
                 }
 
-                // 9. Переход по ссылке (Успех)
                 composable(Routes.EmailVerifySuccess.route) {
                     EmailVerifySuccessScreen(
                         onNavigateToSignIn = {
@@ -176,7 +214,6 @@ fun AppNavGraph(
                     )
                 }
 
-                // 10. Переход по ссылке (Неудача)
                 composable(Routes.EmailVerifyError.route) {
                     EmailVerifyErrorScreen(
                         onResendEmailClick = {
@@ -191,7 +228,6 @@ fun AppNavGraph(
     }
 }
 
-// --- Временные заглушки экранов ---
 
 @Composable
 fun CatalogPlaceholderScreen() {

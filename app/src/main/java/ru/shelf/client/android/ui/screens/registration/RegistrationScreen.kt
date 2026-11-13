@@ -6,9 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -16,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -26,8 +24,8 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ru.shelf.client.android.ui.theme.ShelfTheme
 import ru.shelf.client.android.R
+import ru.shelf.client.android.ui.theme.ShelfTheme
 
 @Composable
 fun RegistrationScreen(
@@ -42,6 +40,12 @@ fun RegistrationScreen(
 
     var isPasswordVisible by remember { mutableStateOf(false) }
     var isConfirmPasswordVisible by remember { mutableStateOf(false) }
+
+    val inputTextStyle = TextStyle(
+        fontSize = 16.sp,
+        fontWeight = FontWeight.W500,
+        color = Color(0xFF3D2B1F)
+    )
 
     Column(
         modifier = Modifier
@@ -85,6 +89,7 @@ fun RegistrationScreen(
                 value = email,
                 onValueChange = { email = it },
                 placeholder = { Text("Введите email", color = Color(0xFFC49880)) },
+                textStyle = inputTextStyle,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),
@@ -118,6 +123,7 @@ fun RegistrationScreen(
                 value = username,
                 onValueChange = { username = it },
                 placeholder = { Text("Введите имя пользователя", color = Color(0xFFC49880)) },
+                textStyle = inputTextStyle,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),
@@ -151,6 +157,7 @@ fun RegistrationScreen(
                 value = password,
                 onValueChange = { password = it },
                 placeholder = { Text("Введите пароль", color = Color(0xFFC49880)) },
+                textStyle = inputTextStyle,
                 trailingIcon = {
                     IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
                         Icon(
@@ -160,7 +167,7 @@ fun RegistrationScreen(
                         )
                     }
                 },
-                visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(mask = '●'),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),
@@ -194,6 +201,7 @@ fun RegistrationScreen(
                 value = confirmPassword,
                 onValueChange = { confirmPassword = it },
                 placeholder = { Text("Повторите пароль", color = Color(0xFFC49880)) },
+                textStyle = inputTextStyle,
                 trailingIcon = {
                     IconButton(onClick = { isConfirmPasswordVisible = !isConfirmPasswordVisible }) {
                         Icon(
@@ -203,7 +211,7 @@ fun RegistrationScreen(
                         )
                     }
                 },
-                visualTransformation = if (isConfirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                visualTransformation = if (isConfirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(mask = '●'),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),
@@ -250,8 +258,7 @@ fun RegistrationScreen(
             )
             Box(
                 modifier = Modifier.clickable { onNavigateToSignIn() }
-            )
-            {
+            ) {
                 Text(
                     text = "Войти",
                     fontSize = 14.sp,

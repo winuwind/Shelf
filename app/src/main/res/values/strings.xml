@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">Shelf</string>
+
+    <string-array name="faq_questions">
+        <item>Не пришло письмо с подтверждением</item>
+        <item>Не помню адрес электронной почты</item>
+        <item>Как изменить пароль?</item>
+    </string-array>
+
+    <string-array name="faq_answers">
+        <item>Проверьте папку «Спам» или «Рассылки». Если письма нет, попробуйте &lt;a href="restore_access"&gt;восстановить доступ&lt;/a&gt; заново через несколько минут.</item>
+        <item>Войдите по имени пользователя. Если вы не помните и его, обратитесь в &lt;a href="support"&gt;службу поддержки&lt;/a&gt;.</item>
+        <item>Вы можете воспользоваться функцией &lt;a href="restore_access"&gt;«Восстановить»&lt;/a&gt; на экране входа, указав e-mail от вашей учетной записи.</item>
+    </string-array>
 </resources>
