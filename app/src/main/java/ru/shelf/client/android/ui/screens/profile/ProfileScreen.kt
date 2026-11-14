@@ -285,7 +285,7 @@ fun ProfileHeader(user: User, isMe: Boolean) {
                 .background(Color(0xFFE5D5CD))
         ) {
             Image(
-                painter = painterResource(id = R.drawable.standard_banner), //TODO: Получиь баннер
+                painter = painterResource(id = R.drawable.standard_banner), //TODO: Получить баннер
                 contentDescription = "Обложка",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
