@@ -26,7 +26,7 @@ import ru.shelf.client.android.ui.screens.account.ChangePasswordScreen
 import ru.shelf.client.android.ui.screens.account.RestoreAccessScreen
 import ru.shelf.client.android.ui.screens.account.SignInScreen
 import ru.shelf.client.android.ui.screens.help.FaqScreen
-import ru.shelf.client.android.ui.screens.profile.OtherProfileScreen
+import ru.shelf.client.android.ui.screens.profile.ProfileScreen
 import ru.shelf.client.android.ui.screens.registration.EmailSentErrorScreen
 import ru.shelf.client.android.ui.screens.registration.EmailSentSuccessScreen
 import ru.shelf.client.android.ui.screens.registration.EmailVerifyErrorScreen
@@ -98,7 +98,7 @@ fun AppNavGraph(
                 }
 
                 composable(Routes.Profile.route) {
-                    OtherProfileScreen(
+                    ProfileScreen(
                         user = mockUserMe,
                         onBackClick = { navController.popBackStack() }
                     )
