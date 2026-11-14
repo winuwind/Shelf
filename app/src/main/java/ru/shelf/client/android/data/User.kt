@@ -6,6 +6,12 @@ enum class CollectionVisibility {
     FRIENDS_ONLY
 }
 
+enum class FriendRequestStatus {
+    NONE,
+    OUTGOING,
+    INCOMING
+}
+
 data class Friend(
     val id: String = "",
     val name: String,
@@ -38,9 +44,15 @@ data class User(
     val coverUrl: String? = null,
     val isCurrentUser: Boolean = (id == CURRENT_USER_ID),
     val isFriend: Boolean = false,
+    val friendRequestStatus: FriendRequestStatus = FriendRequestStatus.NONE,
     val isBlockedByMe: Boolean = false,
     val isBlockedMe: Boolean = false,
     val isPrivate: Boolean = false,
+    val isBannedOrDeleted: Boolean = false,
+    val isBioPrivate: Boolean = false,
+    val isFriendsPrivate: Boolean = false,
+    val isCommunitiesPrivate: Boolean = false,
+    val isCollectionsPrivate: Boolean = false,
     val friendsCount: Int = 0,
     val friendsPreview: List<Friend> = emptyList(),
     val communitiesCount: Int = 0,
@@ -60,7 +72,7 @@ val mockUserAnna = User(
     isBlockedByMe = false,
     isBlockedMe = false,
     isPrivate = false,
-    friendsCount = 128,
+    friendsCount = 5,
     friendsPreview = listOf(
         Friend("1", "Маша", "М", 0xFFE5D5D0),
         Friend("2", "Илья", "И", 0xFFD8E5DC),
@@ -68,7 +80,7 @@ val mockUserAnna = User(
         Friend("4", "Дима", "Д", 0xFFD8E0E8),
         Friend("5", "Алиса", "А", 0xFFE5D5E8)
     ),
-    communitiesCount = 24,
+    communitiesCount = 2,
     communitiesPreview = listOf(
         Community("1", "Мир книгоманов"),
         Community("2", "Фильмы Нолана")
@@ -82,10 +94,11 @@ val mockUserAnna = User(
 val mockUserMe = mockUserAnna.copy(
     id = CURRENT_USER_ID,
     isCurrentUser = true,
-    collectionsCount = 4,
+    collectionsCount = 3,
     collectionsPreview = listOf(
         Collection("1", "Книги", visibility = CollectionVisibility.PUBLIC),
-        Collection("2", "Фильмы", visibility = CollectionVisibility.PRIVATE)
+        Collection("2", "Фильмы", visibility = CollectionVisibility.PRIVATE),
+        Collection("3", "Новые сериалы", visibility = CollectionVisibility.PUBLIC)
     )
 )
 
@@ -96,6 +109,17 @@ val mockUserAnnaFriend = mockUserAnna.copy(
         Collection("1", "Книги", visibility = CollectionVisibility.PUBLIC),
         Collection("2", "Сериалы", visibility = CollectionVisibility.PUBLIC)
     )
+)
+
+val mockUserMaksimOutgoing = mockUserAnna.copy(
+    id = "user_maksim_456",
+    name = "Maksim",
+    bio = "Ищу красоту в мелочах и истории в случайных встречах.",
+    friendRequestStatus = FriendRequestStatus.OUTGOING
+)
+
+val mockUserMaksimIncoming = mockUserMaksimOutgoing.copy(
+    friendRequestStatus = FriendRequestStatus.INCOMING
 )
 
 val mockUserAnnaBlocked = mockUserAnna.copy(
@@ -113,4 +137,10 @@ val mockUserAnnaPrivate = mockUserAnna.copy(
 
 val mockUserAnnaYouAreBlocked = mockUserAnna.copy(
     isBlockedMe = true
+)
+
+val mockUserDeleted = mockUserAnna.copy(
+    isBannedOrDeleted = true,
+    name = "Удаленный аккаунт",
+    bio = ""
 )
