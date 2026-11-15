@@ -18,4 +18,5 @@ sealed class Routes(val route: String) {
     object RestoreAccess : Routes("restore_access")
     object ChangePassword : Routes("change_password")
     object Faq : Routes("faq")
+    object Friends : Routes("friends")
 }

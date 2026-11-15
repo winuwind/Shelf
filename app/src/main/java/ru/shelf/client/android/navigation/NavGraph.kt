@@ -32,6 +32,7 @@ import ru.shelf.client.android.ui.screens.registration.EmailSentSuccessScreen
 import ru.shelf.client.android.ui.screens.registration.EmailVerifyErrorScreen
 import ru.shelf.client.android.ui.screens.registration.EmailVerifySuccessScreen
 import ru.shelf.client.android.ui.screens.registration.RegistrationScreen
+import ru.shelf.client.android.ui.screens.users.FriendsScreen
 
 @Composable
 fun AppNavGraph(
@@ -99,6 +100,16 @@ fun AppNavGraph(
 
                 composable(Routes.Profile.route) {
                     ProfileScreen(
+                        user = mockUserMe,
+                        onBackClick = { navController.popBackStack() },
+                        onOpenFriendsClick = {
+                            navController.navigate(Routes.Friends.route)
+                        }
+                    )
+                }
+
+                composable(Routes.Friends.route) {
+                    FriendsScreen(
                         user = mockUserMe,
                         onBackClick = { navController.popBackStack() }
                     )
@@ -178,7 +189,7 @@ fun AppNavGraph(
                             navController.navigate(Routes.RestoreAccess.route)
                         },
                         onNavigateToSupport = {
-                            navController.navigate(Routes.ChangePassword.route)
+                            navController.navigate(Routes.ChangePassword.route) // TODO: изменить навигацию на другой экран
                         }
                     )
                 }
