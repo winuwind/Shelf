@@ -107,6 +107,9 @@ fun AppNavGraph(
                         },
                         onOpenCommunitiesClick = {
                             navController.navigate(Routes.Communities.route)
+                        },
+                        onOpenCollectionsClick = {
+                            navController.navigate(Routes.Collections.route)
                         }
                     )
                 }
@@ -120,6 +123,13 @@ fun AppNavGraph(
 
                 composable(Routes.Communities.route) {
                     ru.shelf.client.android.ui.screens.communities.CommunitiesScreen(
+                        user = mockUserMe,
+                        onBackClick = { navController.popBackStack() }
+                    )
+                }
+
+                composable(Routes.Collections.route) {
+                    ru.shelf.client.android.ui.screens.collections.CollectionsScreen(
                         user = mockUserMe,
                         onBackClick = { navController.popBackStack() }
                     )

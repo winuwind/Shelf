@@ -30,6 +30,7 @@ data class Community(
 data class Collection(
     val id: String = "",
     val name: String,
+    val dateCreate: String = "24 октября 2026",
     val isPrivate: Boolean = false,
     val visibility: CollectionVisibility = if (isPrivate) CollectionVisibility.PRIVATE else CollectionVisibility.PUBLIC
 )
