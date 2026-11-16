@@ -63,7 +63,7 @@ fun ChangePasswordScreen(
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = "Назад к входу",
+                text = "Назад",
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Medium,
                 color = Color(0xFFA6541F)
