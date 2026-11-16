@@ -22,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
 import ru.shelf.client.android.R
@@ -74,12 +75,26 @@ fun ProfileScreen( //TODO: Переделать на viewModel чтобы не �
     val isMe = user.id == currentUserId || user.isCurrentUser
 
     var activeBanner by remember(bannerNotification) { mutableStateOf(bannerNotification) }
+    var showBlockDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(activeBanner) {
         if (activeBanner != null) {
             delay(5.seconds)
             activeBanner = null
         }
+    }
+
+    if (showBlockDialog) {
+        BlockUserConfirmationDialog(
+            onConfirmBlock = {
+                showBlockDialog = false
+                activeBanner = "Пользователь заблокирован"
+                onBlockUserClick()
+            },
+            onDismiss = {
+                showBlockDialog = false
+            }
+        )
     }
 
     Column(
@@ -140,8 +155,7 @@ fun ProfileScreen( //TODO: Переделать на viewModel чтобы не �
                             onUnblockClick()
                         },
                         onBlockUserClick = {
-                            activeBanner = "Пользователь заблокирован"
-                            onBlockUserClick()
+                            showBlockDialog = true
                         },
                         onSendMessageClick = onSendMessageClick
                     )
@@ -174,6 +188,81 @@ fun ProfileScreen( //TODO: Переделать на viewModel чтобы не �
 }
 
 @Composable
+fun BlockUserConfirmationDialog(
+    onConfirmBlock: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    Dialog(onDismissRequest = onDismiss) {
+        Card(
+            shape = RoundedCornerShape(24.dp),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF8F4)),
+            border = BorderStroke(1.dp, CardBorderColor),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(
+                modifier = Modifier.padding(24.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+                Text(
+                    text = "Заблокировать пользователя?",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = TextPrimary,
+                    lineHeight = 26.sp
+                )
+
+                Text(
+                    text = "Личные сообщения и новые заявки в друзья будут недоступны в обе стороны. Дружба сохранится. Контент с уровнем видимости «Только друзья» временно недоступен. Блокировка не запрещает просмотр публичных коллекций и общедоступных объектов каталога.",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = TextSecondary,
+                    lineHeight = 21.sp
+                )
+
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Button(
+                        onClick = onConfirmBlock,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFB44736)),
+                        shape = RoundedCornerShape(14.dp),
+                        elevation = ButtonDefaults.buttonElevation(0.dp)
+                    ) {
+                        Text(
+                            text = "Заблокировать",
+                            color = Color.White,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+
+                    Button(
+                        onClick = onDismiss,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFCE9DE)),
+                        shape = RoundedCornerShape(14.dp),
+                        elevation = ButtonDefaults.buttonElevation(0.dp)
+                    ) {
+                        Text(
+                            text = "Отмена",
+                            color = TextPrimary,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
 fun ProfileTopBar(
     title: String,
     showMenu: Boolean = false,
@@ -193,7 +282,6 @@ fun ProfileTopBar(
         ) {
             Box(
                 modifier = Modifier
-                    .size(40.dp)
                     .clip(CircleShape)
                     .background(TopBarCircleBg)
                     .clickable { onBackClick() },
@@ -424,7 +512,7 @@ fun ProfileActionButtons(
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(text = "Сообщение", color = DisabledText, fontSize = 14.sp)
                 }
-                
+
                 Button(
                     onClick = onUnblockClick,
                     modifier = Modifier
