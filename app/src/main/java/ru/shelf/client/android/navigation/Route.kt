@@ -19,4 +19,5 @@ sealed class Routes(val route: String) {
     object ChangePassword : Routes("change_password")
     object Faq : Routes("faq")
     object Friends : Routes("friends")
+    object Communities : Routes("communities")
 }

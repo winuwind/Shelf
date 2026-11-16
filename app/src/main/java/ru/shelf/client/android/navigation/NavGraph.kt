@@ -104,12 +104,22 @@ fun AppNavGraph(
                         onBackClick = { navController.popBackStack() },
                         onOpenFriendsClick = {
                             navController.navigate(Routes.Friends.route)
+                        },
+                        onOpenCommunitiesClick = {
+                            navController.navigate(Routes.Communities.route)
                         }
                     )
                 }
 
                 composable(Routes.Friends.route) {
                     FriendsScreen(
+                        user = mockUserMe,
+                        onBackClick = { navController.popBackStack() }
+                    )
+                }
+
+                composable(Routes.Communities.route) {
+                    ru.shelf.client.android.ui.screens.communities.CommunitiesScreen(
                         user = mockUserMe,
                         onBackClick = { navController.popBackStack() }
                     )
