@@ -969,38 +969,40 @@ fun CollectionsSection(user: User, onOpenCollectionsClick: () -> Unit = {}) {
                                 color = TextPrimary
                             )
                             Spacer(modifier = Modifier.height(2.dp))
-                            when (collection.visibility) {
-                                CollectionVisibility.PRIVATE -> {
-                                    Row(verticalAlignment = Alignment.CenterVertically) {
-                                        Icon(
-                                            painter = painterResource(id = R.drawable.profile_privacy_only_me),
-                                            contentDescription = null,
-                                            tint = Color.Unspecified
-                                        )
-                                        Spacer(modifier = Modifier.width(3.dp))
-                                        Text("Только владелец", fontSize = 10.sp, color = TextSecondary)
+                            if (user.id == CURRENT_USER_ID){
+                                when (collection.visibility) {
+                                    CollectionVisibility.PRIVATE -> {
+                                        Row(verticalAlignment = Alignment.CenterVertically) {
+                                            Icon(
+                                                painter = painterResource(id = R.drawable.profile_privacy_only_me),
+                                                contentDescription = null,
+                                                tint = Color.Unspecified
+                                            )
+                                            Spacer(modifier = Modifier.width(3.dp))
+                                            Text("Только владелец", fontSize = 10.sp, color = TextSecondary)
+                                        }
                                     }
-                                }
-                                CollectionVisibility.PUBLIC -> {
-                                    Row(verticalAlignment = Alignment.CenterVertically) {
-                                        Icon(
-                                            painter = painterResource(id = R.drawable.profile_privacy_everything),
-                                            contentDescription = null,
-                                            tint = Color.Unspecified
-                                        )
-                                        Spacer(modifier = Modifier.width(3.dp))
-                                        Text("Для всех", fontSize = 10.sp, color = TextSecondary)
+                                    CollectionVisibility.PUBLIC -> {
+                                        Row(verticalAlignment = Alignment.CenterVertically) {
+                                            Icon(
+                                                painter = painterResource(id = R.drawable.profile_privacy_everything),
+                                                contentDescription = null,
+                                                tint = Color.Unspecified
+                                            )
+                                            Spacer(modifier = Modifier.width(3.dp))
+                                            Text("Для всех", fontSize = 10.sp, color = TextSecondary)
+                                        }
                                     }
-                                }
-                                CollectionVisibility.FRIENDS_ONLY -> {
-                                    Row(verticalAlignment = Alignment.CenterVertically) {
-                                        Icon(
-                                            painter = painterResource(id = R.drawable.profile_privacy_friends_only),
-                                            contentDescription = null,
-                                            tint = Color.Unspecified
-                                        )
-                                        Spacer(modifier = Modifier.width(3.dp))
-                                        Text("Для друзей", fontSize = 10.sp, color = TextSecondary)
+                                    CollectionVisibility.FRIENDS_ONLY -> {
+                                        Row(verticalAlignment = Alignment.CenterVertically) {
+                                            Icon(
+                                                painter = painterResource(id = R.drawable.profile_privacy_friends_only),
+                                                contentDescription = null,
+                                                tint = Color.Unspecified
+                                            )
+                                            Spacer(modifier = Modifier.width(3.dp))
+                                            Text("Для друзей", fontSize = 10.sp, color = TextSecondary)
+                                        }
                                     }
                                 }
                             }
