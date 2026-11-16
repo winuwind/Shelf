@@ -1,10 +1,5 @@
 package ru.shelf.client.android.ui.screens.profile
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -43,6 +38,7 @@ import ru.shelf.client.android.data.mockUserDeleted
 import ru.shelf.client.android.data.mockUserMaksimIncoming
 import ru.shelf.client.android.data.mockUserMaksimOutgoing
 import ru.shelf.client.android.data.mockUserMe
+import ru.shelf.client.android.ui.components.BannerType
 import ru.shelf.client.android.ui.theme.ShelfTheme
 
 val ScreenBgColor = Color(0xFFFFF9F5)
@@ -103,15 +99,11 @@ fun ProfileScreen( //TODO: Переделать на viewModel чтобы не �
             contentPadding = PaddingValues(bottom = 24.dp)
         ) {
             item {
-                AnimatedVisibility(
-                    visible = activeBanner != null,
-                    enter = fadeIn() + slideInVertically(initialOffsetY = { -it }),
-                    exit = fadeOut() + slideOutVertically(targetOffsetY = { -it })
-                ) {
-                    activeBanner?.let { message ->
-                        SuccessBannerNotification(message = message)
-                    }
-                }
+                ru.shelf.client.android.ui.components.FloatingNotificationBannerHost(
+                    message = activeBanner,
+                    typeError = BannerType.Success,
+                    onDismiss = { activeBanner = null }
+                )
             }
 
             item {
@@ -236,36 +228,6 @@ fun ProfileTopBar(
                     tint = Color.Unspecified
                 )
             }
-        }
-    }
-}
-
-@Composable
-fun SuccessBannerNotification(message: String) {
-    Card(
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF8F4)),
-        border = BorderStroke(1.dp, CardBorderColor),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 6.dp)
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.check),
-                contentDescription = null,
-                tint = TerracottaBadge,
-                modifier = Modifier.size(18.dp)
-            )
-            Text(
-                text = message,
-                fontSize = 13.sp,
-                color = TextPrimary
-            )
         }
     }
 }

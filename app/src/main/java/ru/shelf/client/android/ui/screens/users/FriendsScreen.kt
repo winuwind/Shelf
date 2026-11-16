@@ -26,6 +26,9 @@ import ru.shelf.client.android.data.Friend
 import ru.shelf.client.android.data.User
 import ru.shelf.client.android.data.mockUserAnna
 import ru.shelf.client.android.data.mockUserMe
+import ru.shelf.client.android.ui.components.BannerErrorType
+import ru.shelf.client.android.ui.components.BannerType
+import ru.shelf.client.android.ui.components.FloatingNotificationBannerHost
 import ru.shelf.client.android.ui.theme.ShelfTheme
 
 enum class FriendsErrorType(val message: String) {
@@ -51,6 +54,7 @@ fun FriendsScreen(
         Friend("4", "Никита", "Н", 0xFFDAE2D6)
     ),
     errorState: FriendsErrorType? = null,
+    bannerNotification: String? = null,
     onBackClick: () -> Unit = {},
     onUserClick: (Friend) -> Unit = {},
     onAcceptRequestClick: (Friend) -> Unit = {},
@@ -61,6 +65,8 @@ fun FriendsScreen(
     val isMe = user.id == currentUserId || user.isCurrentUser
     var selectedTab by remember { mutableIntStateOf(initialTab) }
 
+    var activeBanner by remember(bannerNotification) { mutableStateOf(bannerNotification) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -69,6 +75,12 @@ fun FriendsScreen(
         FriendsTopBar(
             title = "Друзья",
             onBackClick = onBackClick
+        )
+
+        FloatingNotificationBannerHost(
+            message = activeBanner,
+            typeError = BannerType.Failed,
+            onDismiss = { activeBanner = null }
         )
 
         if (errorState != null) {
@@ -92,13 +104,19 @@ fun FriendsScreen(
                 )
                 1 -> IncomingRequestsTabContent(
                     requests = incomingRequests,
-                    onAccept = onAcceptRequestClick,
-                    onDecline = onDeclineRequestClick,
+                    onAccept = { friend ->
+                        onAcceptRequestClick(friend)
+                    },
+                    onDecline = { friend ->
+                        onDeclineRequestClick(friend)
+                    },
                     onUserClick = onUserClick
                 )
                 2 -> OutgoingRequestsTabContent(
                     requests = outgoingRequests,
-                    onCancel = onCancelRequestClick,
+                    onCancel = { friend ->
+                        onCancelRequestClick(friend)
+                    },
                     onUserClick = onUserClick
                 )
             }
@@ -779,7 +797,19 @@ fun Preview_Friends_ErrorBanner() {
     }
 }
 
-@Preview(name = "8. Друзья другого пользователя", showBackground = true, device = "id:pixel_5")
+@Preview(name = "8. Всплывающая плашка ошибки на 5 сек", showBackground = true, device = "id:pixel_5")
+@Composable
+fun Preview_Friends_FloatingErrorBanner() {
+    ShelfTheme {
+        FriendsScreen(
+            user = mockUserMe,
+            initialTab = 1,
+            bannerNotification = BannerErrorType.DECLINE_REQUEST_FAILED.message
+        )
+    }
+}
+
+@Preview(name = "9. Друзья другого пользователя", showBackground = true, device = "id:pixel_5")
 @Composable
 fun Preview_Friends_OtherUser() {
     ShelfTheme {
@@ -789,7 +819,7 @@ fun Preview_Friends_OtherUser() {
     }
 }
 
-@Preview(name = "9. Друзья другого пользователя скрыты (Private)", showBackground = true, device = "id:pixel_5")
+@Preview(name = "10. Друзья другого пользователя скрыты (Private)", showBackground = true, device = "id:pixel_5")
 @Composable
 fun Preview_Friends_OtherUserPrivate() {
     ShelfTheme {
