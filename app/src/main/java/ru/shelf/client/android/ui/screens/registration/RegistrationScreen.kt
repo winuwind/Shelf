@@ -24,22 +24,63 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import ru.shelf.client.android.R
 import ru.shelf.client.android.ui.theme.ShelfTheme
+import ru.shelf.client.android.ui.viewModels.RegistrationViewModel
 
 @Composable
 fun RegistrationScreen(
+    viewModel: RegistrationViewModel = viewModel(),
     onRegisterSuccess: () -> Unit = {},
     onRegisterError: () -> Unit = {},
     onNavigateToSignIn: () -> Unit = {}
 ) {
-    var email by remember { mutableStateOf("") }
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
+    val uiState by viewModel.uiState.collectAsState()
 
-    var isPasswordVisible by remember { mutableStateOf(false) }
-    var isConfirmPasswordVisible by remember { mutableStateOf(false) }
+    RegistrationContent(
+        email = uiState.email,
+        username = uiState.username,
+        password = uiState.password,
+        confirmPassword = uiState.confirmPassword,
+        isPasswordVisible = uiState.isPasswordVisible,
+        isConfirmPasswordVisible = uiState.isConfirmPasswordVisible,
+        errorMessage = uiState.errorMessage,
+        onEmailChange = { viewModel.onEmailChange(it) },
+        onUsernameChange = { viewModel.onUsernameChange(it) },
+        onPasswordChange = { viewModel.onPasswordChange(it) },
+        onConfirmPasswordChange = { viewModel.onConfirmPasswordChange(it) },
+        onPasswordVisibilityToggle = { viewModel.togglePasswordVisibility() },
+        onConfirmPasswordVisibilityToggle = { viewModel.toggleConfirmPasswordVisibility() },
+        onRegisterClick = { viewModel.register(onRegisterSuccess, onRegisterError) },
+        onNavigateToSignIn = onNavigateToSignIn
+    )
+}
+
+@Composable
+fun RegistrationContent(
+    email: String = "",
+    username: String = "",
+    password: String = "",
+    confirmPassword: String = "",
+    isPasswordVisible: Boolean = false,
+    isConfirmPasswordVisible: Boolean = false,
+    errorMessage: String? = null,
+    onEmailChange: (String) -> Unit = {},
+    onUsernameChange: (String) -> Unit = {},
+    onPasswordChange: (String) -> Unit = {},
+    onConfirmPasswordChange: (String) -> Unit = {},
+    onPasswordVisibilityToggle: () -> Unit = {},
+    onConfirmPasswordVisibilityToggle: () -> Unit = {},
+    onRegisterClick: () -> Unit = {},
+    onNavigateToSignIn: () -> Unit = {}
+) {
+    var internalEmail by remember(email) { mutableStateOf(email) }
+    var internalUsername by remember(username) { mutableStateOf(username) }
+    var internalPassword by remember(password) { mutableStateOf(password) }
+    var internalConfirmPassword by remember(confirmPassword) { mutableStateOf(confirmPassword) }
+    var internalIsPasswordVisible by remember(isPasswordVisible) { mutableStateOf(isPasswordVisible) }
+    var internalIsConfirmPasswordVisible by remember(isConfirmPasswordVisible) { mutableStateOf(isConfirmPasswordVisible) }
 
     val inputTextStyle = TextStyle(
         fontSize = 16.sp,
@@ -86,8 +127,11 @@ fun RegistrationScreen(
             )
             Spacer(modifier = Modifier.height(6.dp))
             OutlinedTextField(
-                value = email,
-                onValueChange = { email = it },
+                value = internalEmail,
+                onValueChange = {
+                    internalEmail = it
+                    onEmailChange(it)
+                },
                 placeholder = { Text("Введите email", color = Color(0xFFC49880)) },
                 textStyle = inputTextStyle,
                 modifier = Modifier
@@ -120,8 +164,11 @@ fun RegistrationScreen(
             )
             Spacer(modifier = Modifier.height(6.dp))
             OutlinedTextField(
-                value = username,
-                onValueChange = { username = it },
+                value = internalUsername,
+                onValueChange = {
+                    internalUsername = it
+                    onUsernameChange(it)
+                },
                 placeholder = { Text("Введите имя пользователя", color = Color(0xFFC49880)) },
                 textStyle = inputTextStyle,
                 modifier = Modifier
@@ -154,20 +201,26 @@ fun RegistrationScreen(
             )
             Spacer(modifier = Modifier.height(6.dp))
             OutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
+                value = internalPassword,
+                onValueChange = {
+                    internalPassword = it
+                    onPasswordChange(it)
+                },
                 placeholder = { Text("Введите пароль", color = Color(0xFFC49880)) },
                 textStyle = inputTextStyle,
                 trailingIcon = {
-                    IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
+                    IconButton(onClick = {
+                        internalIsPasswordVisible = !internalIsPasswordVisible
+                        onPasswordVisibilityToggle()
+                    }) {
                         Icon(
-                            painter = painterResource(if (isPasswordVisible) R.drawable.show_password else R.drawable.hide_password_or_message),
+                            painter = painterResource(if (internalIsPasswordVisible) R.drawable.show_password else R.drawable.hide_password_or_message),
                             contentDescription = null,
                             tint = Color.Unspecified
                         )
                     }
                 },
-                visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(mask = '●'),
+                visualTransformation = if (internalIsPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(mask = '●'),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),
@@ -198,20 +251,26 @@ fun RegistrationScreen(
             )
             Spacer(modifier = Modifier.height(6.dp))
             OutlinedTextField(
-                value = confirmPassword,
-                onValueChange = { confirmPassword = it },
+                value = internalConfirmPassword,
+                onValueChange = {
+                    internalConfirmPassword = it
+                    onConfirmPasswordChange(it)
+                },
                 placeholder = { Text("Повторите пароль", color = Color(0xFFC49880)) },
                 textStyle = inputTextStyle,
                 trailingIcon = {
-                    IconButton(onClick = { isConfirmPasswordVisible = !isConfirmPasswordVisible }) {
+                    IconButton(onClick = {
+                        internalIsConfirmPasswordVisible = !internalIsConfirmPasswordVisible
+                        onConfirmPasswordVisibilityToggle()
+                    }) {
                         Icon(
-                            painter = painterResource(if (isConfirmPasswordVisible) R.drawable.show_password else R.drawable.hide_password_or_message),
+                            painter = painterResource(if (internalIsConfirmPasswordVisible) R.drawable.show_password else R.drawable.hide_password_or_message),
                             contentDescription = null,
                             tint = Color.Unspecified
                         )
                     }
                 },
-                visualTransformation = if (isConfirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(mask = '●'),
+                visualTransformation = if (internalIsConfirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(mask = '●'),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),
@@ -228,10 +287,19 @@ fun RegistrationScreen(
             )
         }
 
+        if (errorMessage != null) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = errorMessage,
+                fontSize = 12.sp,
+                color = Color(0xFFB44736)
+            )
+        }
+
         Spacer(modifier = Modifier.height(28.dp))
 
         Button(
-            onClick = onRegisterSuccess,
+            onClick = onRegisterClick,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(52.dp),

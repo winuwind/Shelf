@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import ru.shelf.client.android.R
 import ru.shelf.client.android.data.CURRENT_USER_ID
 import ru.shelf.client.android.data.Friend
@@ -30,11 +31,37 @@ import ru.shelf.client.android.ui.components.BannerErrorType
 import ru.shelf.client.android.ui.components.BannerType
 import ru.shelf.client.android.ui.components.FloatingNotificationBannerHost
 import ru.shelf.client.android.ui.theme.ShelfTheme
+import ru.shelf.client.android.ui.viewModels.FriendsViewModel
 
 enum class FriendsErrorType(val message: String) {
     LOAD_FRIENDS_FAILED("Не удалось загрузить список друзей. Попробуйте позже"),
     LOAD_INCOMING_FAILED("Не удалось загрузить входящие заявки. Попробуйте позже"),
     CANCEL_REQUEST_FAILED("Не удалось отменить заявку. Попробуйте ещё раз")
+}
+
+@Composable
+fun FriendsScreen(
+    viewModel: FriendsViewModel = viewModel(),
+    onBackClick: () -> Unit = {},
+    onUserClick: (Friend) -> Unit = {}
+) {
+    val uiState by viewModel.uiState.collectAsState()
+
+    FriendsScreen(
+        user = uiState.user,
+        currentUserId = uiState.currentUserId,
+        initialTab = uiState.selectedTab,
+        incomingRequests = uiState.incomingRequests,
+        outgoingRequests = uiState.outgoingRequests,
+        errorState = uiState.errorState,
+        bannerNotification = uiState.bannerNotification,
+        onBackClick = onBackClick,
+        onUserClick = onUserClick,
+        onAcceptRequestClick = { viewModel.acceptRequest(it) },
+        onDeclineRequestClick = { viewModel.declineRequest(it) },
+        onCancelRequestClick = { viewModel.cancelRequest(it) },
+        onRetryErrorClick = { viewModel.retryError() }
+    )
 }
 
 @Composable

@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import ru.shelf.client.android.R
 import ru.shelf.client.android.data.CURRENT_USER_ID
 import ru.shelf.client.android.data.Collection
@@ -28,11 +29,32 @@ import ru.shelf.client.android.data.User
 import ru.shelf.client.android.data.mockUserAnna
 import ru.shelf.client.android.data.mockUserMe
 import ru.shelf.client.android.ui.theme.ShelfTheme
+import ru.shelf.client.android.ui.viewModels.CollectionsViewModel
 
 enum class CollectionsErrorType(val message: String) {
     LOAD_COLLECTIONS_FAILED("Не удалось загрузить коллекции. Попробуйте позже"),
     DELETE_COLLECTION_FAILED("Не удалось удалить коллекцию. Попробуйте позже"),
     PRIVACY_RESTRICTED("Список коллекций недоступен")
+}
+
+@Composable
+fun CollectionsScreen(
+    viewModel: CollectionsViewModel = viewModel(),
+    onBackClick: () -> Unit = {},
+    onCreateCollectionClick: () -> Unit = {},
+    onCollectionClick: (Collection) -> Unit = {}
+) {
+    val uiState by viewModel.uiState.collectAsState()
+
+    CollectionsScreen(
+        user = uiState.user,
+        currentUserId = uiState.currentUserId,
+        errorState = uiState.errorState,
+        onBackClick = onBackClick,
+        onCreateCollectionClick = onCreateCollectionClick,
+        onCollectionClick = onCollectionClick,
+        onRetryErrorClick = { viewModel.retryError() }
+    )
 }
 
 @Composable

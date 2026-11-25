@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import ru.shelf.client.android.R
 import ru.shelf.client.android.data.CURRENT_USER_ID
 import ru.shelf.client.android.data.Community
@@ -29,9 +30,29 @@ import ru.shelf.client.android.data.mockUserMe
 import ru.shelf.client.android.ui.components.BannerType
 import ru.shelf.client.android.ui.components.FloatingNotificationBannerHost
 import ru.shelf.client.android.ui.theme.ShelfTheme
+import ru.shelf.client.android.ui.viewModels.CommunitiesViewModel
 
 enum class CommunitiesErrorType(val message: String) {
     LOAD_COMMUNITIES_FAILED("Не удалось загрузить список сообществ. Попробуйте позже")
+}
+
+@Composable
+fun CommunitiesScreen(
+    viewModel: CommunitiesViewModel = viewModel(),
+    onBackClick: () -> Unit = {},
+    onCommunityClick: (Community) -> Unit = {}
+) {
+    val uiState by viewModel.uiState.collectAsState()
+
+    CommunitiesScreen(
+        user = uiState.user,
+        currentUserId = uiState.currentUserId,
+        errorState = uiState.errorState,
+        bannerNotification = uiState.bannerNotification,
+        onBackClick = onBackClick,
+        onCommunityClick = onCommunityClick,
+        onRetryErrorClick = { viewModel.retryError() }
+    )
 }
 
 @Composable

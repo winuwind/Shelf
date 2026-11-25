@@ -87,7 +87,10 @@ fun AppNavGraph(
                 startDestination = Routes.Catalog.route
             ) {
                 composable(Routes.Catalog.route) {
-                    CatalogPlaceholderScreen()
+                    ru.shelf.client.android.ui.screens.objects.CatalogScreen(
+                        previousScreenName = "Лента",
+                        onBackClick = { navController.popBackStack() }
+                    )
                 }
 
                 composable(Routes.Search.route) {
@@ -229,7 +232,7 @@ fun AppNavGraph(
                     EmailSentErrorScreen(
                         onOkClick = {
                             navController.navigate(Routes.SignIn.route) {
-                                popUpTo(Routes.SignIn.route) { inclusive = true }
+                                 popUpTo(Routes.SignIn.route) { inclusive = true }
                             }
                         }
                     )
@@ -256,24 +259,6 @@ fun AppNavGraph(
                 }
             }
         }
-    }
-}
-
-
-@Composable
-fun CatalogPlaceholderScreen() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFFFF9F5)),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = "Экран Каталога",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color(0xFF352A26)
-        )
     }
 }
 

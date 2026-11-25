@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
+import androidx.lifecycle.viewmodel.compose.viewModel
 import ru.shelf.client.android.R
 import ru.shelf.client.android.data.CURRENT_USER_ID
 import ru.shelf.client.android.data.CollectionVisibility
@@ -41,6 +42,7 @@ import ru.shelf.client.android.data.mockUserMaksimOutgoing
 import ru.shelf.client.android.data.mockUserMe
 import ru.shelf.client.android.ui.components.BannerType
 import ru.shelf.client.android.ui.theme.ShelfTheme
+import ru.shelf.client.android.ui.viewModels.ProfileViewModel
 
 val ScreenBgColor = Color(0xFFFFF9F5)
 val TextPrimary = Color(0xFF352A26)
@@ -54,7 +56,44 @@ val DisabledText = Color(0xFFA5978E)
 val DisabledBg = Color(0xFFF0E8E2)
 
 @Composable
-fun ProfileScreen( //TODO: Переделать на viewModel чтобы не передавать столько функций + добавить кликабельность друзей/сообществ/коллекций на экране профиля
+fun ProfileScreen(
+    user: User = mockUserMe,
+    viewModel: ProfileViewModel = viewModel(),
+    onBackClick: () -> Unit = {},
+    onSettingsClick: () -> Unit = {},
+    onSendMessageClick: () -> Unit = {},
+    onOpenFriendsClick: () -> Unit = {},
+    onOpenCommunitiesClick: () -> Unit = {},
+    onOpenCollectionsClick: () -> Unit = {}
+) {
+    val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(user) {
+        viewModel.setUser(user)
+    }
+
+    ProfileContent(
+        user = uiState.user,
+        currentUserId = uiState.currentUserId,
+        bannerNotification = uiState.activeBanner,
+        onBackClick = onBackClick,
+        onSettingsClick = onSettingsClick,
+        onAddFriendClick = { viewModel.addFriend() },
+        onRemoveFriendClick = { viewModel.removeFriend() },
+        onAcceptRequestClick = { viewModel.addFriend() },
+        onDeclineRequestClick = { viewModel.removeFriend() },
+        onCancelRequestClick = { viewModel.removeFriend() },
+        onUnblockClick = { viewModel.unblockUser() },
+        onBlockUserClick = { viewModel.confirmBlockUser() },
+        onSendMessageClick = onSendMessageClick,
+        onOpenFriendsClick = onOpenFriendsClick,
+        onOpenCommunitiesClick = onOpenCommunitiesClick,
+        onOpenCollectionsClick = onOpenCollectionsClick
+    )
+}
+
+@Composable
+fun ProfileContent(
     user: User,
     currentUserId: String = CURRENT_USER_ID,
     bannerNotification: String? = null,
@@ -1053,7 +1092,7 @@ fun SectionHeader(
 @Composable
 fun Preview_Profile_Me() {
     ShelfTheme {
-        ProfileScreen(user = mockUserMe)
+        ProfileContent(user = mockUserMe)
     }
 }
 
@@ -1061,7 +1100,7 @@ fun Preview_Profile_Me() {
 @Composable
 fun Preview_Profile_Normal() {
     ShelfTheme {
-        ProfileScreen(user = mockUserAnna)
+        ProfileContent(user = mockUserAnna)
     }
 }
 
@@ -1069,7 +1108,7 @@ fun Preview_Profile_Normal() {
 @Composable
 fun Preview_Profile_Friend() {
     ShelfTheme {
-        ProfileScreen(user = mockUserAnnaFriend)
+        ProfileContent(user = mockUserAnnaFriend)
     }
 }
 
@@ -1077,7 +1116,7 @@ fun Preview_Profile_Friend() {
 @Composable
 fun Preview_Profile_OutgoingRequest() {
     ShelfTheme {
-        ProfileScreen(
+        ProfileContent(
             user = mockUserMaksimOutgoing,
             bannerNotification = "Заявка в друзья отправлена"
         )
@@ -1088,7 +1127,7 @@ fun Preview_Profile_OutgoingRequest() {
 @Composable
 fun Preview_Profile_IncomingRequest() {
     ShelfTheme {
-        ProfileScreen(user = mockUserMaksimIncoming)
+        ProfileContent(user = mockUserMaksimIncoming)
     }
 }
 
@@ -1096,7 +1135,7 @@ fun Preview_Profile_IncomingRequest() {
 @Composable
 fun Preview_Profile_BlockedByMe() {
     ShelfTheme {
-        ProfileScreen(user = mockUserAnnaBlocked)
+        ProfileContent(user = mockUserAnnaBlocked)
     }
 }
 
@@ -1104,7 +1143,7 @@ fun Preview_Profile_BlockedByMe() {
 @Composable
 fun Preview_Profile_YouAreBlocked() {
     ShelfTheme {
-        ProfileScreen(user = mockUserAnnaYouAreBlocked)
+        ProfileContent(user = mockUserAnnaYouAreBlocked)
     }
 }
 
@@ -1112,7 +1151,7 @@ fun Preview_Profile_YouAreBlocked() {
 @Composable
 fun Preview_Profile_Private() {
     ShelfTheme {
-        ProfileScreen(user = mockUserAnnaPrivate)
+        ProfileContent(user = mockUserAnnaPrivate)
     }
 }
 
@@ -1120,6 +1159,6 @@ fun Preview_Profile_Private() {
 @Composable
 fun Preview_Profile_Deleted() {
     ShelfTheme {
-        ProfileScreen(user = mockUserDeleted)
+        ProfileContent(user = mockUserDeleted)
     }
 }

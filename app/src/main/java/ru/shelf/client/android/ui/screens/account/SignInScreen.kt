@@ -22,20 +22,60 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import ru.shelf.client.android.R
 import ru.shelf.client.android.ui.theme.ShelfTheme
+import ru.shelf.client.android.ui.viewModels.SignInViewModel
 
 @Composable
 fun SignInScreen(
+    viewModel: SignInViewModel = viewModel(),
     onSignInSuccess: () -> Unit = {},
+    onNavigateToSignUp: () -> Unit = {},
+    onNavigateToRestoreAccess: () -> Unit = {},
+    onNavigateToFaq: () -> Unit = {}
+) {
+    val uiState by viewModel.uiState.collectAsState()
+
+    SignInContent(
+        emailOrName = uiState.emailOrName,
+        password = uiState.password,
+        rememberMe = uiState.rememberMe,
+        isPasswordVisible = uiState.isPasswordVisible,
+        errorMessage = uiState.errorMessage,
+        onEmailOrNameChange = { viewModel.onEmailOrNameChange(it) },
+        onPasswordChange = { viewModel.onPasswordChange(it) },
+        onRememberMeToggle = { viewModel.toggleRememberMe() },
+        onPasswordVisibilityToggle = { viewModel.togglePasswordVisibility() },
+        onSignInClick = { viewModel.signIn(onSignInSuccess) },
+        onNavigateToSignUp = onNavigateToSignUp,
+        onNavigateToRestoreAccess = onNavigateToRestoreAccess,
+        onNavigateToFaq = onNavigateToFaq
+    )
+}
+
+@Composable
+fun SignInContent(
+    emailOrName: String = "",
+    password: String = "",
+    rememberMe: Boolean = true,
+    isPasswordVisible: Boolean = false,
+    errorMessage: String? = null,
+    onEmailOrNameChange: (String) -> Unit = {},
+    onPasswordChange: (String) -> Unit = {},
+    onRememberMeToggle: () -> Unit = {},
+    onPasswordVisibilityToggle: () -> Unit = {},
+    onSignInClick: () -> Unit = {},
     onNavigateToSignUp: () -> Unit = {},
     onNavigateToRestoreAccess: () -> Unit = {},
     onNavigateToFaq: () -> Unit = {}
 ) {
     var emailOrName by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var rememberMe by remember { mutableStateOf(true) }
-    var isPasswordVisible by remember { mutableStateOf(false) }
+    var internalEmailOrName by remember(emailOrName) { mutableStateOf(emailOrName) }
+    var internalPassword by remember(password) { mutableStateOf(password) }
+    var internalRememberMe by remember(rememberMe) { mutableStateOf(rememberMe) }
+    var internalIsPasswordVisible by remember(isPasswordVisible) { mutableStateOf(isPasswordVisible) }
 
     val inputTextStyle = TextStyle(
         fontSize = 16.sp,
@@ -79,8 +119,11 @@ fun SignInScreen(
             )
             Spacer(modifier = Modifier.height(6.dp))
             OutlinedTextField(
-                value = emailOrName,
-                onValueChange = { emailOrName = it },
+                value = internalEmailOrName,
+                onValueChange = {
+                    internalEmailOrName = it
+                    onEmailOrNameChange(it)
+                },
                 placeholder = { Text("Введите email или имя", color = Color(0xFFC49880)) },
                 textStyle = inputTextStyle,
                 modifier = Modifier
@@ -110,20 +153,26 @@ fun SignInScreen(
             )
             Spacer(modifier = Modifier.height(6.dp))
             OutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
+                value = internalPassword,
+                onValueChange = {
+                    internalPassword = it
+                    onPasswordChange(it)
+                },
                 placeholder = { Text("Введите пароль", color = Color(0xFFC49880)) },
                 textStyle = inputTextStyle,
                 trailingIcon = {
-                    IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
+                    IconButton(onClick = {
+                        internalIsPasswordVisible = !internalIsPasswordVisible
+                        onPasswordVisibilityToggle()
+                    }) {
                         Icon(
-                            painter = painterResource(if (isPasswordVisible) R.drawable.show_password else R.drawable.hide_password_or_message),
+                            painter = painterResource(if (internalIsPasswordVisible) R.drawable.show_password else R.drawable.hide_password_or_message),
                             contentDescription = null,
                             tint = Color.Unspecified
                         )
                     }
                 },
-                visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(mask = '●'),
+                visualTransformation = if (internalIsPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(mask = '●'),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),
@@ -140,17 +189,32 @@ fun SignInScreen(
             )
         }
 
+        if (errorMessage != null) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = errorMessage,
+                fontSize = 12.sp,
+                color = Color(0xFFB44736)
+            )
+        }
+
         Spacer(modifier = Modifier.height(16.dp))
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { rememberMe = !rememberMe },
+                .clickable {
+                    internalRememberMe = !internalRememberMe
+                    onRememberMeToggle()
+                },
             verticalAlignment = Alignment.CenterVertically
         ) {
             Checkbox(
-                checked = rememberMe,
-                onCheckedChange = { rememberMe = it },
+                checked = internalRememberMe,
+                onCheckedChange = {
+                    internalRememberMe = it
+                    onRememberMeToggle()
+                },
                 colors = CheckboxDefaults.colors(
                     checkedColor = Color(0xFFA6541F),
                     uncheckedColor = Color(0xFFF5C4A8),
@@ -192,7 +256,7 @@ fun SignInScreen(
             }
 
             Button(
-                onClick = onSignInSuccess,
+                onClick = onSignInClick,
                 modifier = Modifier
                     .weight(1f)
                     .height(52.dp),
