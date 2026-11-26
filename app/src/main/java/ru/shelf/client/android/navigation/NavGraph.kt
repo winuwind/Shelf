@@ -21,11 +21,23 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import ru.shelf.client.android.data.mockApplicationPiranesi
+import ru.shelf.client.android.data.mockApplicationsList
 import ru.shelf.client.android.data.mockUserMe
 import ru.shelf.client.android.ui.screens.account.ChangePasswordScreen
 import ru.shelf.client.android.ui.screens.account.RestoreAccessScreen
 import ru.shelf.client.android.ui.screens.account.SignInScreen
 import ru.shelf.client.android.ui.screens.help.FaqScreen
+import ru.shelf.client.android.ui.screens.objects.SuggestObjectScreen
+import ru.shelf.client.android.ui.screens.objects.SuggestObjectSuccessScreen
+import ru.shelf.client.android.ui.screens.objects.MyApplicationsScreen
+import ru.shelf.client.android.ui.screens.objects.ApplicationDetailScreen
+import ru.shelf.client.android.ui.screens.objects.ApplicationDetail
+import ru.shelf.client.android.ui.screens.objects.ApplicationStatus
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import ru.shelf.client.android.ui.screens.objects.CategorySelectionScreen
 import ru.shelf.client.android.ui.screens.profile.ProfileScreen
 import ru.shelf.client.android.ui.screens.registration.EmailSentErrorScreen
 import ru.shelf.client.android.ui.screens.registration.EmailSentSuccessScreen
@@ -92,6 +104,87 @@ fun AppNavGraph(
                         previousScreenName = "Лента",
                         onBackClick = { navController.popBackStack() },
                         onNavigateToObject = { objectId ->
+                            navController.navigate(Routes.ObjectDetail.createRoute(objectId))
+                        },
+                        onProposeObjectClick = {
+                            navController.navigate(Routes.SuggestObject.route)
+                        },
+                        onMyApplicationsClick = {
+                            navController.navigate(Routes.MyApplications.route)
+                        }
+                    )
+                }
+
+                composable(Routes.SuggestObject.route) { backStackEntry ->
+                    val selectedCategory = backStackEntry.savedStateHandle.get<String>("selectedCategory") ?: ""
+                    
+                    SuggestObjectScreen(
+                        initialCategory = selectedCategory,
+                        onBackClick = { navController.popBackStack() },
+                        onSubmitClick = { title, category, desc, hasImage -> 
+                            val newId = (1050..9999).random().toString()
+                            val dateFormat = SimpleDateFormat("dd.MM.yyyy, HH:mm", Locale.getDefault())
+                            val currentDate = dateFormat.format(Date())
+
+                            val newApp = ApplicationDetail(
+                                id = newId,
+                                title = title,
+                                sendDate = currentDate,
+                                proposedCategory = category,
+                                description = desc,
+                                status = ApplicationStatus.MODERATION,
+                                fileName = if (hasImage) "uploaded_image.jpg" else null
+                            )
+                            mockApplicationsList.add(0, newApp)
+                            
+                            navController.navigate(Routes.SuggestObjectSuccess.createRoute(newId)) 
+                        },
+                        onSelectCategoryClick = { navController.navigate(Routes.CategorySelection.route) }
+                    )
+                }
+                
+                composable(Routes.CategorySelection.route) {
+                    CategorySelectionScreen(
+                        onBackClick = { navController.popBackStack() },
+                        onCategorySelected = { category ->
+                            navController.previousBackStackEntry?.savedStateHandle?.set("selectedCategory", category)
+                            navController.popBackStack()
+                        }
+                    )
+                }
+
+                composable(Routes.SuggestObjectSuccess.route) { backStackEntry ->
+                    val id = backStackEntry.arguments?.getString("applicationId") ?: ""
+                    val application = mockApplicationsList.find { it.id == id }
+                        ?: mockApplicationPiranesi
+
+                    SuggestObjectSuccessScreen(
+                        application = application,
+                        onBackClick = { navController.popBackStack() },
+                        onMyApplicationsClick = { navController.navigate(Routes.MyApplications.route) }
+                    )
+                }
+
+                composable(Routes.MyApplications.route) {
+                    MyApplicationsScreen(
+                        onBackClick = { navController.popBackStack() },
+                        onProposeObjectClick = { navController.navigate(Routes.SuggestObject.route) },
+                        onApplicationClick = { app -> 
+                            navController.navigate(Routes.ApplicationDetail.createRoute(app.id)) 
+                        }
+                    )
+                }
+
+                composable(Routes.ApplicationDetail.route) { backStackEntry ->
+                    val id = backStackEntry.arguments?.getString("applicationId") ?: "1042"
+                    
+                    val application = mockApplicationsList.find { it.id == id }
+                        ?: mockApplicationPiranesi
+                    
+                    ApplicationDetailScreen(
+                        application = application,
+                        onBackClick = { navController.popBackStack() },
+                        onNavigateToObject = { objectId -> 
                             navController.navigate(Routes.ObjectDetail.createRoute(objectId))
                         }
                     )

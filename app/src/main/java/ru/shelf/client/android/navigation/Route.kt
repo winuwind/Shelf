@@ -21,6 +21,15 @@ sealed class Routes(val route: String) {
     object Friends : Routes("friends")
     object Communities : Routes("communities")
     object Collections : Routes("collections")
+    object SuggestObject : Routes("suggest_object")
+    object CategorySelection : Routes("category_selection")
+    object MyApplications : Routes("my_applications")
+    object SuggestObjectSuccess : Routes("suggest_object_success/{applicationId}") {
+        fun createRoute(applicationId: String) = "suggest_object_success/$applicationId"
+    }
+    object ApplicationDetail : Routes("application_detail/{applicationId}") {
+        fun createRoute(applicationId: String) = "application_detail/$applicationId"
+    }
     object ObjectDetail : Routes("object_detail/{objectId}") {
         fun createRoute(objectId: String) = "object_detail/$objectId"
     }
