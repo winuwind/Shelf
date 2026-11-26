@@ -227,7 +227,7 @@ fun SearchInitialStateView(
         val iconRes = if (selectedTab == SearchTab.USERS) {
             R.drawable.search_username_status
         } else {
-            R.drawable.search // Or another icon if needed, like community_not_found
+            R.drawable.search
         }
 
         val hintText = if (selectedTab == SearchTab.USERS) {
@@ -399,7 +399,7 @@ fun SearchEmptyResultsView(
         val iconRes = if (selectedTab == SearchTab.USERS) {
             R.drawable.search_no_users_found
         } else {
-            R.drawable.search_no_users_found // Assuming we reuse or have a similar one
+            R.drawable.search_no_users_found
         }
 
         val emptyText = if (selectedTab == SearchTab.USERS) {
