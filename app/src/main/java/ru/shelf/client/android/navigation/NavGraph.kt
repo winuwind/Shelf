@@ -32,6 +32,7 @@ import ru.shelf.client.android.ui.screens.registration.EmailSentSuccessScreen
 import ru.shelf.client.android.ui.screens.registration.EmailVerifyErrorScreen
 import ru.shelf.client.android.ui.screens.registration.EmailVerifySuccessScreen
 import ru.shelf.client.android.ui.screens.registration.RegistrationScreen
+import ru.shelf.client.android.ui.screens.search.SearchScreen
 import ru.shelf.client.android.ui.screens.users.FriendsScreen
 
 @Composable
@@ -106,7 +107,17 @@ fun AppNavGraph(
                 }
 
                 composable(Routes.Search.route) {
-                    SearchPlaceholderScreen()
+                    SearchScreen(
+                        onNavigateToUser = { userId ->
+                            navController.navigate(Routes.Profile.route)
+                        },
+                        onNavigateToCommunity = { communityId ->
+                            navController.navigate(Routes.Communities.route)
+                        },
+                        onNavigateToCatalog = {
+                            navController.navigate(Routes.Catalog.route)
+                        }
+                    )
                 }
 
                 composable(Routes.Messages.route) {
