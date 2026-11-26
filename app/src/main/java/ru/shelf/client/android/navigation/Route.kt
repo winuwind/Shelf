@@ -21,4 +21,7 @@ sealed class Routes(val route: String) {
     object Friends : Routes("friends")
     object Communities : Routes("communities")
     object Collections : Routes("collections")
+    object ObjectDetail : Routes("object_detail/{objectId}") {
+        fun createRoute(objectId: String) = "object_detail/$objectId"
+    }
 }

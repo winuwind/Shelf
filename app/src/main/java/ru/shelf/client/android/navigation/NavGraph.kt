@@ -89,6 +89,18 @@ fun AppNavGraph(
                 composable(Routes.Catalog.route) {
                     ru.shelf.client.android.ui.screens.objects.CatalogScreen(
                         previousScreenName = "Лента",
+                        onBackClick = { navController.popBackStack() },
+                        onNavigateToObject = { objectId ->
+                            navController.navigate(Routes.ObjectDetail.createRoute(objectId))
+                        }
+                    )
+                }
+
+                composable(Routes.ObjectDetail.route) { backStackEntry ->
+                    val objectId = backStackEntry.arguments?.getString("objectId") ?: "1"
+                    ru.shelf.client.android.ui.screens.objects.ObjectDetailScreen(
+                        objectId = objectId,
+                        isAuthorized = isAuthorized,
                         onBackClick = { navController.popBackStack() }
                     )
                 }
