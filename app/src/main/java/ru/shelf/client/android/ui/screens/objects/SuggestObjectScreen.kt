@@ -19,6 +19,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,10 +49,10 @@ fun SuggestObjectScreen(
     onSubmitClick: (title: String, category: String, desc: String, hasImage: Boolean) -> Unit = { _, _, _, _ -> },
     onSelectCategoryClick: () -> Unit = {}
 ) {
-    var objectName by remember { mutableStateOf("") }
-    var selectedCategory by remember { mutableStateOf(initialCategory) }
-    var otherCategoryName by remember { mutableStateOf("") }
-    var objectDescription by remember { mutableStateOf("") }
+    var objectName by rememberSaveable { mutableStateOf("") }
+    var selectedCategory by rememberSaveable { mutableStateOf(initialCategory) }
+    var otherCategoryName by rememberSaveable { mutableStateOf("") }
+    var objectDescription by rememberSaveable { mutableStateOf("") }
 
     LaunchedEffect(initialCategory) {
         if (initialCategory.isNotEmpty()) {
@@ -59,12 +60,13 @@ fun SuggestObjectScreen(
         }
     }
     
-    var imageUri by remember { mutableStateOf<Uri?>(null) }
+    var imageUriString by rememberSaveable { mutableStateOf<String?>(null) }
+    val imageUri = imageUriString?.let { Uri.parse(it) }
 
-    var showErrors by remember { mutableStateOf(false) }
+    var showErrors by rememberSaveable { mutableStateOf(false) }
     
-    var fileName by remember { mutableStateOf("") }
-    var fileSize by remember { mutableStateOf("") }
+    var fileName by rememberSaveable { mutableStateOf("") }
+    var fileSize by rememberSaveable { mutableStateOf("") }
     val context = LocalContext.current
     
     LaunchedEffect(imageUri) {
@@ -79,7 +81,7 @@ fun SuggestObjectScreen(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri -> 
             if (uri != null) {
-                imageUri = uri
+                imageUriString = uri.toString()
             }
         }
     )
