@@ -224,25 +224,40 @@ fun SearchInitialStateView(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Icon(
-            painter = painterResource(id = R.drawable.search_username_status),
-            contentDescription = null,
-            tint = Color.Unspecified,
-            modifier = Modifier.size(56.dp)
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
+        val iconRes = if (selectedTab == SearchTab.USERS) {
+            R.drawable.search_username_status
+        } else {
+            R.drawable.search // Or another icon if needed, like community_not_found
+        }
 
         val hintText = if (selectedTab == SearchTab.USERS) {
             "Введите имя пользователя для поиска"
         } else {
             "Введите название сообщества для поиска"
         }
+        
+        Box(
+            modifier = Modifier
+                .size(72.dp)
+                .clip(CircleShape)
+                .background(Color(0xFFFCE9DE)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                painter = painterResource(id = iconRes),
+                contentDescription = null,
+                tint = Color.Unspecified,
+                modifier = Modifier.size(32.dp)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(20.dp))
 
         Text(
             text = hintText,
-            fontSize = 14.sp,
-            color = Color(0xFF84736B),
+            fontSize = 15.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = Color(0xFF352A26),
             textAlign = TextAlign.Center,
             lineHeight = 21.sp
         )
@@ -381,25 +396,40 @@ fun SearchEmptyResultsView(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Icon(
-            painter = painterResource(id = R.drawable.search_no_users_found),
-            contentDescription = null,
-            tint = Color.Unspecified,
-            modifier = Modifier.size(56.dp)
-        )
+        val iconRes = if (selectedTab == SearchTab.USERS) {
+            R.drawable.search_no_users_found
+        } else {
+            R.drawable.search_no_users_found // Assuming we reuse or have a similar one
+        }
+
+        val emptyText = if (selectedTab == SearchTab.USERS) {
+            "Пользователи по вашему запросу не найдены"
+        } else {
+            "Сообщества по вашему запросу не найдены"
+        }
+        
+        Box(
+            modifier = Modifier
+                .size(72.dp)
+                .clip(CircleShape)
+                .background(Color(0xFFF3F1F1)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                painter = painterResource(id = iconRes),
+                contentDescription = null,
+                tint = Color.Unspecified,
+                modifier = Modifier.size(32.dp)
+            )
+        }
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        val emptyText = if (selectedTab == SearchTab.USERS) {
-            "Пользователи не найдены"
-        } else {
-            "Сообщества не найдены"
-        }
-
         Text(
             text = emptyText,
-            fontSize = 14.sp,
-            color = Color(0xFF84736B),
+            fontSize = 15.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = Color(0xFF352A26),
             textAlign = TextAlign.Center,
             lineHeight = 21.sp
         )
