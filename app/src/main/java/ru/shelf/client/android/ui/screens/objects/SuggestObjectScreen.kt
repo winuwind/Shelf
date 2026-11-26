@@ -1,6 +1,8 @@
 package ru.shelf.client.android.ui.screens.objects
 
+import android.content.Context
 import android.net.Uri
+import android.provider.OpenableColumns
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -22,6 +24,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -33,7 +37,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import ru.shelf.client.android.R
+import java.util.Locale
 
 @Composable
 fun SuggestObjectScreen(
@@ -56,6 +62,18 @@ fun SuggestObjectScreen(
     var imageUri by remember { mutableStateOf<Uri?>(null) }
 
     var showErrors by remember { mutableStateOf(false) }
+    
+    var fileName by remember { mutableStateOf("") }
+    var fileSize by remember { mutableStateOf("") }
+    val context = LocalContext.current
+    
+    LaunchedEffect(imageUri) {
+        imageUri?.let { uri ->
+            val info = getFileInfo(context, uri)
+            fileName = info.first
+            fileSize = info.second
+        }
+    }
     
     val photoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
@@ -242,24 +260,28 @@ fun SuggestObjectScreen(
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Box(
+                    AsyncImage(
+                        model = imageUri,
+                        contentDescription = "Выбранное изображение",
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .size(width = 70.dp, height = 92.dp)
-                            .background(Color.LightGray, shape = RoundedCornerShape(12.dp))
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(Color.LightGray)
                     )
                     
                     Column(
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Text(
-                            text = "Выбранное_изображение.jpg",
+                            text = fileName,
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Medium,
                             color = Color(0xFF352A26)
                         )
                         
                         Text(
-                            text = "Размер неизвестен",
+                            text = fileSize,
                             fontSize = 12.sp,
                             color = Color(0xFF84736B)
                         )
@@ -535,6 +557,31 @@ fun SuggestObjectSelectorField(
             )
         }
     }
+}
+
+fun getFileInfo(context: Context, uri: Uri): Pair<String, String> {
+    var fileName = "unknown"
+    var fileSize = "Размер неизвестен"
+    context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+        val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+        val sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE)
+        if (cursor.moveToFirst()) {
+            if (nameIndex != -1) fileName = cursor.getString(nameIndex)
+            if (sizeIndex != -1) {
+                val sizeBytes = cursor.getLong(sizeIndex)
+                if (sizeBytes > 0) {
+                    val sizeKb = sizeBytes / 1024
+                    val sizeMb = sizeKb / 1024.0
+                    fileSize = if (sizeMb >= 1.0) {
+                        String.format(Locale.getDefault(), "%.1f МБ", sizeMb)
+                    } else {
+                        "$sizeKb КБ"
+                    }
+                }
+            }
+        }
+    }
+    return Pair(fileName, fileSize)
 }
 
 @Preview(name = "1. Пустая форма", showBackground = true, device = "id:pixel_5")
