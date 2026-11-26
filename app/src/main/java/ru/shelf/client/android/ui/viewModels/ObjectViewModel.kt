@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import ru.shelf.client.android.data.CatalogObject
+import ru.shelf.client.android.data.Rating
 import ru.shelf.client.android.data.Review
 import ru.shelf.client.android.data.mockCatalogObjects
 
@@ -23,8 +24,12 @@ data class ObjectDetailUiState(
     val userProgress: String? = null,
     val userRating: Int? = null,
     val reviews: List<Review> = listOf(
-        Review("1", "Анна Смирнова", rating = 9, date = "24 октября 2026", text = "Великолепное произведение! Захватывает с первых страниц и держит в напряжении до самого конца.", likesCount = 14),
-        Review("2", "Максим Петров", rating = 8, date = "20 октября 2026", text = "Очень глубокий смысл, заставляет задуматься о многом. Рекомендую к прочтению каждому.", likesCount = 8)
+        Review("1", "Анна Смирнова", rating = 9, dateCreated = "24 октября 2026", dateChanged = null, text = "Великолепное произведение! Захватывает с первых страниц и держит в напряжении до самого конца.", likesCount = 14),
+        Review("2", "Максим Петров", rating = 8, dateCreated = "20 октября 2026", dateChanged = "30 октября 2026", text = "Очень глубокий смысл, заставляет задуматься о многом. Рекомендую к прочтению каждому.", likesCount = 8)
+    ),
+    val ratings: List<Rating> = listOf(
+        Rating(rating = 8.8, "Кинопоиск"),
+        Rating(rating = 6.1, "IMDb")
     ),
     val isAddCollectionDialogShown: Boolean = false,
     val isRateDialogShown: Boolean = false,
@@ -124,7 +129,8 @@ class ObjectViewModel : ViewModel() {
             id = System.currentTimeMillis().toString(),
             authorName = "Вы",
             rating = currentState.draftReviewRating,
-            date = "Сегодня",
+            dateCreated = "Сегодня",
+            dateChanged = null,
             text = text,
             likesCount = 0
         )

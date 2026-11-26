@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,6 +27,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import ru.shelf.client.android.R
 import ru.shelf.client.android.data.CatalogObject
+import ru.shelf.client.android.data.Rating
 import ru.shelf.client.android.data.Review
 import ru.shelf.client.android.data.mockCatalogObjects
 import ru.shelf.client.android.ui.components.BannerType
@@ -33,6 +35,7 @@ import ru.shelf.client.android.ui.components.FloatingNotificationBannerHost
 import ru.shelf.client.android.ui.theme.ShelfTheme
 import ru.shelf.client.android.ui.viewModels.ObjectViewModel
 import ru.shelf.client.android.ui.viewModels.UserCollectionSelection
+import kotlin.collections.List
 
 @Composable
 fun ObjectDetailScreen(
@@ -57,6 +60,7 @@ fun ObjectDetailScreen(
         userProgress = uiState.userProgress,
         userRating = uiState.userRating,
         reviews = uiState.reviews,
+        ratings = uiState.ratings,
         bannerNotification = uiState.bannerNotification,
         isAddCollectionDialogShown = uiState.isAddCollectionDialogShown,
         isRateDialogShown = uiState.isRateDialogShown,
@@ -79,8 +83,7 @@ fun ObjectDetailScreen(
         onDraftReviewTextChange = { viewModel.onDraftReviewTextChange(it) },
         onConfirmReview = { viewModel.confirmAddReview() },
         onToggleCollectionSelection = { viewModel.toggleCollectionSelection(it) },
-        onConfirmCollectionSelection = { viewModel.confirmCollectionSelection() },
-        onLikeReview = { viewModel.toggleLikeReview(it) }
+        onConfirmCollectionSelection = { viewModel.confirmCollectionSelection() }
     )
 }
 
@@ -93,6 +96,7 @@ fun ObjectDetailContent(
     userProgress: String?,
     userRating: Int?,
     reviews: List<Review>,
+    ratings: List<Rating>,
     bannerNotification: String?,
     isAddCollectionDialogShown: Boolean,
     isRateDialogShown: Boolean,
@@ -115,8 +119,7 @@ fun ObjectDetailContent(
     onDraftReviewTextChange: (String) -> Unit,
     onConfirmReview: () -> Unit,
     onToggleCollectionSelection: (String) -> Unit,
-    onConfirmCollectionSelection: () -> Unit,
-    onLikeReview: (String) -> Unit
+    onConfirmCollectionSelection: () -> Unit
 ) {
     var activeBanner by remember(bannerNotification) { mutableStateOf(bannerNotification) }
 
@@ -312,9 +315,6 @@ fun ObjectDetailContent(
 //                            Column(
 //                                modifier = Modifier.padding(start = 8.dp)
 //                            ) {
-//                                val formattedRating =
-//                                    catalogObject.rating.toString().replace('.', ',')
-//
 //                                Text(
 //                                    text = "Нет оценок",
 //                                    fontSize = 24.sp,
@@ -327,6 +327,7 @@ fun ObjectDetailContent(
 //                                    color = Color(0xFF84736B)
 //                                )
 //                            }
+//                        }
 //                    }
 //                }
 //            }
@@ -336,7 +337,7 @@ fun ObjectDetailContent(
 //                    modifier = Modifier
 //                        .fillMaxWidth()
 //                        .clip(RoundedCornerShape(16.dp))
-//                        .background(Color(0xFFA6541F)),
+//                        .background(Color(0xFFDE6B3B)),
 //                ) {
 //                    Row(
 //                        modifier = Modifier
@@ -370,104 +371,192 @@ fun ObjectDetailContent(
 //                    }
 //                }
 //            }
-
-            if (isAuthorized) {
-                item {
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        shape = RoundedCornerShape(16.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color.White),
-                        border = BorderStroke(1.dp, Color(0xFFEEDFD6))
-                    ) {
-                        Column(
+//
+//            if (isAuthorized) {
+//                item {
+//                    Card(
+//                        modifier = Modifier
+//                            .fillMaxWidth(),
+//                        shape = RoundedCornerShape(16.dp),
+//                        colors = CardDefaults.cardColors(containerColor = Color.White),
+//                        border = BorderStroke(1.dp, Color(0xFFEEDFD6))
+//                    ) {
+//                        Column(
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .padding(all = 16.dp),
+//                            verticalArrangement = Arrangement.spacedBy(8.dp),
+//                        ) {
+//                            Row(
+//                                modifier = Modifier
+//                                    .fillMaxWidth(),
+//                                horizontalArrangement = Arrangement.Start,
+//                                verticalAlignment = Alignment.CenterVertically
+//                            ) {
+//                                Icon(
+//                                    painter = painterResource(R.drawable.object_rating),
+//                                    contentDescription = null,
+//                                    tint = Color.Unspecified
+//                                )
+//
+//                                Column(
+//                                    modifier = Modifier.padding(start = 8.dp)
+//                                ) {
+//                                    Text(
+//                                        text = "Моя оценка",
+//                                        fontSize = 12.sp,
+//                                        color = Color(0xFF84736B)
+//                                    )
+//                                    var rating = ""
+//                                    var colorRating = Color.White
+//
+//                                    if (userRating != null) {
+//                                        rating = "$userRating / 10"
+//                                        colorRating = Color(0xFFA54E32)
+//                                    } else {
+//                                        rating = "Не оценено"
+//                                        colorRating = Color(0xFF84736B)
+//                                    }
+//                                    Text(
+//                                        text = rating,
+//                                        fontSize = 24.sp,
+//                                        fontWeight = FontWeight.Bold,
+//                                        color = colorRating,
+//                                    )
+//                                }
+//                            }
+//
+//                            if (userRating != null) {
+//                                Button(
+//                                    modifier = Modifier.fillMaxSize(),
+//                                    shape = RoundedCornerShape(16.dp),
+//                                    onClick = onRatingClick,
+//                                    colors = ButtonDefaults.buttonColors(
+//                                        containerColor = Color(
+//                                            0xFFFFE8DA
+//                                        )
+//                                    )
+//                                ) {
+//                                    Text(
+//                                        "Изменить оценку",
+//                                        color = Color(0xFFA54E32),
+//                                        fontSize = 14.sp,
+//                                        fontWeight = FontWeight.SemiBold
+//                                    )
+//                                }
+//
+//                                Button(
+//                                    modifier = Modifier.fillMaxSize(),
+//                                    shape = RoundedCornerShape(16.dp),
+//                                    onClick = onRemoveRatingClick,
+//                                    colors = ButtonDefaults.buttonColors(
+//                                        containerColor = Color(
+//                                            0xFFFFE8DA
+//                                        )
+//                                    )
+//                                ) {
+//                                    Text(
+//                                        "Удалить оценку",
+//                                        color = Color(0xFFA54E32),
+//                                        fontSize = 14.sp,
+//                                        fontWeight = FontWeight.SemiBold
+//                                    )
+//                                }
+//                            } else {
+//                                Button(
+//                                    modifier = Modifier
+//                                        .fillMaxSize()
+//                                        .height(50.dp),
+//                                    shape = RoundedCornerShape(12.dp),
+//                                    onClick = onRatingClick,
+//                                    colors = ButtonDefaults.buttonColors(
+//                                        containerColor = Color(
+//                                            0xFFFFE8DA
+//                                        )
+//                                    )
+//                                ) {
+//                                    Text(
+//                                        "Оценить объект",
+//                                        color = Color(0xFFA54E32),
+//                                        fontSize = 14.sp,
+//                                        fontWeight = FontWeight.SemiBold
+//                                    )
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//
+//            item {
+//                Card(
+//                    modifier = Modifier
+//                        .fillMaxWidth(),
+//                    shape = RoundedCornerShape(16.dp),
+//                    colors = CardDefaults.cardColors(containerColor = Color.White),
+//                    border = BorderStroke(1.dp, Color(0xFFEEDFD6))
+//                ) {
+//                    Column(
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .padding(all = 16.dp),
+//                        verticalArrangement = Arrangement.spacedBy(8.dp)
+//
+//                    ){
+//                        Text(
+//                            "Внешние оценки",
+//                            fontSize = 20.sp,
+//                            fontWeight = FontWeight.SemiBold,
+//                            color = Color(0xFF352A26)
+//                        )
+//
+//                        LazyRow(
+//                            modifier = Modifier,
+//                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+//                        ) {
+//                            items(ratings) { rating ->
+//                                RatingCard(rating)
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+            if(isAuthorized){ //TODO: как проверить доступен ли статус для этого объекта
+                if(catalogObject.status != null){
+                    item{
+                        Card(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(all = 16.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                                .fillMaxWidth(),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color.White),
+                            border = BorderStroke(1.dp, Color(0xFFEEDFD6))
                         ) {
-                            Row(
+                            Column(
                                 modifier = Modifier
-                                    .fillMaxWidth(),
-                                horizontalArrangement = Arrangement.Start,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.object_rating),
-                                    contentDescription = null,
-                                    tint = Color.Unspecified
+                                    .fillMaxWidth()
+                                    .padding(all = 16.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ){
+                                Text(
+                                    "Мой статус",
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.Normal,
+                                    color = Color(0xFF84736B)
                                 )
 
-                                Column(
-                                    modifier = Modifier.padding(start = 8.dp)
-                                ) {
-                                    Text(
-                                        text = "Моя оценка",
-                                        fontSize = 12.sp,
-                                        color = Color(0xFF84736B)
-                                    )
-                                    var rating = ""
-                                    var colorRating = Color.White
+                                Text(
+                                    catalogObject.status,
+                                    fontSize = 21.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = Color(0xFFA54E32)
+                                )
 
-                                    if (catalogObject.myRating != null) {
-                                        rating = "${catalogObject.myRating} / 10"
-                                        colorRating = Color(0xFFA54E32)
-                                    } else {
-                                        rating = "Не оценено"
-                                        colorRating = Color(0xFF84736B)
-                                    }
-                                    Text(
-                                        text = rating,
-                                        fontSize = 24.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = colorRating,
-                                    )
-                                }
-                            }
-
-                            if (catalogObject.myRating != null) {
-                                Button(
-                                    modifier = Modifier.fillMaxSize(),
-                                    shape = RoundedCornerShape(16.dp),
-                                    onClick = onRatingClick,
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color(
-                                            0xFFFFE8DA
-                                        )
-                                    )
-                                ) {
-                                    Text(
-                                        "Изменить оценку",
-                                        color = Color(0xFFA54E32),
-                                        fontSize = 14.sp,
-                                        fontWeight = FontWeight.SemiBold
-                                    )
-                                }
-
-                                Button(
-                                    modifier = Modifier.fillMaxSize(),
-                                    shape = RoundedCornerShape(16.dp),
-                                    onClick = onRemoveRatingClick,
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color(
-                                            0xFFFFE8DA
-                                        )
-                                    )
-                                ) {
-                                    Text(
-                                        "Удалить оценку",
-                                        color = Color(0xFFA54E32),
-                                        fontSize = 14.sp,
-                                        fontWeight = FontWeight.SemiBold
-                                    )
-                                }
-                            } else {
                                 Button(
                                     modifier = Modifier
                                         .fillMaxSize()
                                         .height(50.dp),
                                     shape = RoundedCornerShape(12.dp),
-                                    onClick = onRatingClick,
+                                    onClick = {}, //TODO: функционал кнопки
                                     colors = ButtonDefaults.buttonColors(
                                         containerColor = Color(
                                             0xFFFFE8DA
@@ -475,7 +564,27 @@ fun ObjectDetailContent(
                                     )
                                 ) {
                                     Text(
-                                        "Оценить объект",
+                                        "Изменить статус",
+                                        color = Color(0xFFA54E32),
+                                        fontSize = 14.sp,
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                }
+
+                                Button(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .height(50.dp),
+                                    shape = RoundedCornerShape(12.dp),
+                                    onClick = {  },  //TODO: функционал кнопки
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color(
+                                            0xFFFFE8DA
+                                        )
+                                    )
+                                ) {
+                                    Text(
+                                        "Убрать статус",
                                         color = Color(0xFFA54E32),
                                         fontSize = 14.sp,
                                         fontWeight = FontWeight.SemiBold
@@ -483,26 +592,6 @@ fun ObjectDetailContent(
                                 }
                             }
                         }
-                    }
-                }
-            }
-
-            item {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    shape = RoundedCornerShape(16.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color.White),
-                    border = BorderStroke(1.dp, Color(0xFFEEDFD6))
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(all = 16.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-
-                    ){
-
                     }
                 }
             }
@@ -514,28 +603,46 @@ fun ObjectDetailContent(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Отзывы (${reviews.size})",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
+                        text = "Отзывы",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.SemiBold,
                         color = Color(0xFF352A26)
                     )
-                    if (isAuthorized) {
-                        TextButton(onClick = onAddReviewClick) {
-                            Text(
-                                text = "+ Написать отзыв",
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = Color(0xFFA6541F)
-                            )
-                        }
-                    }
+                    Text(
+                        text = "${reviews.size}",
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Normal,
+                        color = Color(0xFF84736B)
+                    )
+                }
+            }
+
+            item{
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                        ,
+                    onClick = onAddReviewClick,
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(
+                            0xFFDE6B3B
+                        )
+                    )
+                ) {
+                    Text(
+                        text = "Написать отзыв",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.White
+                    )
                 }
             }
 
             items(reviews) { review ->
                 ReviewCard(
-                    review = review,
-                    onLikeClick = { onLikeReview(review.id) }
+                    review = review
                 )
             }
         }
@@ -543,9 +650,49 @@ fun ObjectDetailContent(
 }
 
 @Composable
+fun RatingCard(
+    rating: Rating
+){
+    Card(
+        modifier = Modifier
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF1E8)),
+        border = BorderStroke(1.dp, Color(0xFFEEDFD6)),
+    ){
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(all = 12.dp),
+
+        ) {
+            Text(
+                rating.platformName,
+                color = Color(0xFFA54E32),
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Normal
+            )
+
+            Text(
+                "${rating.rating}/10",
+                fontSize = 22.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = Color(0xFF352A26)
+            )
+
+            Text(
+                "Шкала от 0 до 10",
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Normal,
+                color = Color(0xFF84736B)
+            )
+        }
+    }
+}
+
+@Composable
 fun ReviewCard(
-    review: Review,
-    onLikeClick: () -> Unit = {}
+    review: Review
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -563,47 +710,29 @@ fun ReviewCard(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Box(
+                    Icon(
+                        painter = painterResource(R.drawable.standard_avatar), //TODO: Загрузка картинки
+                        contentDescription = null,
+                        tint = Color.Unspecified,
                         modifier = Modifier
-                            .size(36.dp)
-                            .clip(CircleShape)
-                            .background(Color(0xFFFDECE5)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = review.authorName.take(1).uppercase(),
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFFA6541F)
-                        )
-                    }
-                    Column {
-                        Text(
-                            text = review.authorName,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = Color(0xFF352A26)
-                        )
-                        Text(
-                            text = review.date,
-                            fontSize = 12.sp,
-                            color = Color(0xFF84736B)
-                        )
-                    }
+                            .size(34.dp)
+                    )
+
+                    Text(
+                        text = review.authorName,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color(0xFFA54E32)
+                    )
                 }
 
                 if (review.rating != null) {
-                    Surface(
-                        shape = RoundedCornerShape(6.dp),
-                        color = Color(0xFFFDECE5)
-                    ) {
-                        Text(
-                            text = "★ ${review.rating}",
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFFA6541F),
-                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
-                        )
-                    }
+                    Text(
+                        text = "${review.rating}/10",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color(0xFFA54E32)
+                    )
                 }
             }
 
@@ -612,23 +741,28 @@ fun ReviewCard(
             Text(
                 text = review.text,
                 fontSize = 14.sp,
-                color = Color(0xFF5A4A42),
-                lineHeight = 18.sp
+                fontWeight = FontWeight.Normal,
+                color = Color(0xFF5A4A42)
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
-            ) {
-                TextButton(onClick = onLikeClick) {
-                    Text(
-                        text = "♥ ${review.likesCount}",
-                        fontSize = 12.sp,
-                        color = Color(0xFFA6541F)
-                    )
-                }
+            Text(
+                text = "Опубликовано ${review.dateCreated}",
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Normal,
+                color = Color(0xFF84736B),
+            )
+
+            if(review.dateChanged != null){
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = "Изменено ${review.dateChanged}",
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = Color(0xFF84736B)
+                )
             }
         }
     }
@@ -916,7 +1050,14 @@ fun Preview_ObjectDetail_Authorized() {
             userStatus = "Читаю",
             userProgress = "120 из 350 стр.",
             userRating = 9,
-            reviews = emptyList(),
+            reviews = listOf(
+                Review("1", "Анна Смирнова", rating = 9, dateCreated = "24 октября 2026", dateChanged = null, text = "Великолепное произведение! Захватывает с первых страниц и держит в напряжении до самого конца.", likesCount = 14),
+                Review("2", "Максим Петров", rating = 8, dateCreated = "20 октября 2026", dateChanged = "30 октября 2026", text = "Очень глубокий смысл, заставляет задуматься о многом. Рекомендую к прочтению каждому.", likesCount = 8)
+            ),
+            ratings = listOf(
+                Rating(rating = 8.8, "Кинопоиск"),
+                Rating(rating = 6.1, "IMDb")
+            ),
             bannerNotification = null,
             isAddCollectionDialogShown = false,
             isRateDialogShown = false,
@@ -939,8 +1080,7 @@ fun Preview_ObjectDetail_Authorized() {
             onDraftReviewTextChange = {},
             onConfirmReview = {},
             onToggleCollectionSelection = {},
-            onConfirmCollectionSelection = {},
-            onLikeReview = {}
+            onConfirmCollectionSelection = {}
         )
     }
 }
@@ -956,8 +1096,9 @@ fun Preview_ObjectDetail_Unauthorized() {
             userProgress = null,
             userRating = null,
             reviews = emptyList(),
+            ratings = emptyList(),
             bannerNotification = null,
-            isAddCollectionDialogShown = false,
+            isAddCollectionDialogShown = true,
             isRateDialogShown = false,
             isAddReviewDialogShown = false,
             selectedRatingInDialog = 8,
@@ -978,8 +1119,7 @@ fun Preview_ObjectDetail_Unauthorized() {
             onDraftReviewTextChange = {},
             onConfirmReview = {},
             onToggleCollectionSelection = {},
-            onConfirmCollectionSelection = {},
-            onLikeReview = {}
+            onConfirmCollectionSelection = {}
         )
     }
 }

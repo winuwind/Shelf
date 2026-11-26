@@ -19,9 +19,15 @@ data class Review(
     val authorName: String,
     val authorAvatar: String? = null,
     val rating: Int? = null,
-    val date: String,
+    val dateCreated: String,
+    val dateChanged: String?,
     val text: String,
     val likesCount: Int = 0
+)
+
+data class Rating(
+    val rating: Double,
+    val platformName: String
 )
 
 val mockCatalogObjects = listOf(
@@ -31,7 +37,8 @@ val mockCatalogObjects = listOf(
         title = "1984",
         rating = 8.8f,
         ratingsCount = 1420,
-        reviewsCount = 310
+        reviewsCount = 310,
+        status = "Читаю"
     ),
     CatalogObject(
         id = "2",
