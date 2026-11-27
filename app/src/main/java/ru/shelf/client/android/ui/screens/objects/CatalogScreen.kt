@@ -299,7 +299,7 @@ fun CatalogObjectCard(
                 verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 Text(
-                    text = catalogObject.category.uppercase(),
+                    text = catalogObject.category.name.uppercase(),
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Medium,
                     color = Color(0xFFA54E32)

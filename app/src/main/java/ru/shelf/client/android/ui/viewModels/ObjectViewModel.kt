@@ -21,7 +21,7 @@ data class ObjectDetailUiState(
     val catalogObject: CatalogObject = mockCatalogObjects.first(),
     val isAuthorized: Boolean = true,
     val userStatus: String? = null,
-    val userProgress: String? = null,
+    val userProgress: Int? = null,
     val userRating: Int? = null,
     val reviews: List<Review> = listOf(
         Review("1", "Анна Смирнова", rating = 9, dateCreated = "24 октября 2026", dateChanged = null, text = "Великолепное произведение! Захватывает с первых страниц и держит в напряжении до самого конца.", likesCount = 14),
@@ -34,6 +34,9 @@ data class ObjectDetailUiState(
     val isAddCollectionDialogShown: Boolean = false,
     val isRateDialogShown: Boolean = false,
     val isAddReviewDialogShown: Boolean = false,
+    val isStatusChangeShown: Boolean = false,
+    val isProgressChangeShown: Boolean = false,
+    val isStatusRemoveDialogShown: Boolean = false,
     val bannerNotification: String? = null,
     val selectedRatingInDialog: Int = 8,
     val draftReviewText: String = "",
@@ -50,24 +53,92 @@ class ObjectViewModel : ViewModel() {
     val uiState: StateFlow<ObjectDetailUiState> = _uiState.asStateFlow()
 
     fun loadObject(objectId: String) {
-        val found = mockCatalogObjects.find { it.id == objectId } ?: mockCatalogObjects.first()
-        _uiState.update { it.copy(catalogObject = found) }
+        val found = mockCatalogObjects.find { it.id == objectId } ?: mockCatalogObjects.first() //TODO: получение userRating, reviews, ratings,
+        _uiState.update {
+            it.copy(
+                catalogObject = found,
+                userStatus = found.status,
+                userProgress = found.progress,
+
+            )
+        }
     }
 
     fun setAuthorized(authorized: Boolean) {
         _uiState.update { it.copy(isAuthorized = authorized) }
     }
 
-    fun toggleUserStatus(status: String) {
+    fun onUpdateUserStatus(){
+        _uiState.update { it.copy(isStatusChangeShown = true) }
+    }
+
+    fun onUpdateUserStatusDismiss(){
         _uiState.update { currentState ->
-            val newStatus = if (currentState.userStatus == status) null else status
-            val bannerMsg = newStatus?.let { "Статус изменен на «$it»" } ?: "Статус убран"
-            currentState.copy(userStatus = newStatus, bannerNotification = bannerMsg)
+
+            currentState.copy(isStatusChangeShown = false, userStatus = currentState.catalogObject.status)
         }
     }
 
-    fun setUserProgress(progress: String?) {
-        _uiState.update { it.copy(userProgress = progress) }
+    fun toggleUserStatus(status: String) {
+        _uiState.update { currentState ->
+            var newStatus = status ?: null
+
+            if(!currentState.catalogObject.category.listAvailableStatus.contains(status)){
+                newStatus = currentState.userStatus
+            }
+            currentState.catalogObject.status = newStatus
+            currentState.copy(userStatus = newStatus, isStatusRemoveDialogShown = false)
+        }//TODO: сохранение прогресса на сервер
+    }
+
+    fun onSetStatus(status: String?){
+        _uiState.update { currentState ->
+            var bannerMsg = status?.let { "Статус объекта изменен" } ?: "Статус удалён"
+            var progress = currentState.userProgress
+            var newStatus = status
+            if(currentState.catalogObject.category.listAvailableStatus.contains(status)){
+                if(currentState.catalogObject.category.listAvailableStatus.first() == status){
+                    progress = 0
+                }
+                else if (currentState.catalogObject.category.listAvailableStatus.last() == status){
+                    progress = currentState.catalogObject.limitProgress
+                }
+            }
+            else{
+                newStatus = currentState.userStatus
+                bannerMsg = "Недопустимый статус для данного типа объекта"
+            }
+            currentState.catalogObject.status = newStatus
+            currentState.catalogObject.progress = progress
+            currentState.copy(userStatus = newStatus, bannerNotification = bannerMsg, isStatusChangeShown = false, userProgress = progress, isStatusRemoveDialogShown = false)
+        }
+    }
+
+    fun onRemoveStatusDialog(){
+        _uiState.update { it.copy(isStatusRemoveDialogShown = true) }
+    }
+
+    fun onUpdateProgress(){
+        _uiState.update { it.copy(isProgressChangeShown = true) }
+    }
+
+    fun onUpdateProgressDismiss(){
+        _uiState.update { it.copy(isProgressChangeShown = false) }
+    }
+
+    fun setUserProgress(progress: Int) {
+        _uiState.update { currentState ->
+            var status = currentState.userStatus
+            if(progress == 0 && status != null){
+                status = currentState.catalogObject.category.listAvailableStatus.first()
+            }
+            else if(progress == currentState.catalogObject.limitProgress && status != null){
+                status = currentState.catalogObject.category.listAvailableStatus.last()
+            }
+            currentState.catalogObject.status = status
+            currentState.catalogObject.progress = progress
+            currentState.copy(userProgress = progress, userStatus = status, bannerNotification = "Прогресс сохранён", isProgressChangeShown = false)
+        } //TODO: сохранение прогресса на сервер
     }
 
     fun openRateDialog() {
@@ -81,8 +152,10 @@ class ObjectViewModel : ViewModel() {
 
     fun removeRating() {
         _uiState.update { currentState ->
+            currentState.catalogObject.myRating = null
             currentState.copy(
-                userRating = null
+                userRating = null,
+                bannerNotification = "Оценка удалена"
             )
         }
     }
@@ -98,10 +171,11 @@ class ObjectViewModel : ViewModel() {
     fun confirmRating() {
         _uiState.update { currentState ->
             val rating = currentState.selectedRatingInDialog
+            currentState.catalogObject.myRating = rating
             currentState.copy(
                 userRating = rating,
                 isRateDialogShown = false,
-                bannerNotification = "Ваша оценка: $rating из 10"
+                bannerNotification = "Оценка сохранена"
             )
         }
     }
@@ -184,4 +258,9 @@ class ObjectViewModel : ViewModel() {
     fun dismissBanner() {
         _uiState.update { it.copy(bannerNotification = null) }
     }
+
+    fun onNumberException(){
+        _uiState.update { it.copy(bannerNotification = "Поле должно содержать целое число") }
+    }
+
 }

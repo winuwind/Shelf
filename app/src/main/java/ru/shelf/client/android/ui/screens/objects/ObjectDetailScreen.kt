@@ -13,11 +13,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import ru.shelf.client.android.R
+import ru.shelf.client.android.data.ApplicationStatus
 import ru.shelf.client.android.data.CatalogObject
 import ru.shelf.client.android.data.Rating
 import ru.shelf.client.android.data.Review
@@ -64,12 +67,22 @@ fun ObjectDetailScreen(
         bannerNotification = uiState.bannerNotification,
         isAddCollectionDialogShown = uiState.isAddCollectionDialogShown,
         isRateDialogShown = uiState.isRateDialogShown,
+        isUpdateStatusShown = uiState.isStatusChangeShown,
+        isDialogRemoveStatusShown = uiState.isStatusRemoveDialogShown,
+        isUpdateProgressShown = uiState.isProgressChangeShown,
         isAddReviewDialogShown = uiState.isAddReviewDialogShown,
         selectedRatingInDialog = uiState.selectedRatingInDialog,
         draftReviewText = uiState.draftReviewText,
         userCollections = uiState.userCollections,
         onBackClick = onBackClick,
+        onStatusUpdate = { viewModel.onUpdateUserStatus() },
+        onDismissStatusUpdate = { viewModel.onUpdateUserStatusDismiss() },
         onStatusToggle = { viewModel.toggleUserStatus(it) },
+        onSetStatus = { viewModel.onSetStatus(it) },
+        onRemoveStatusDialog = { viewModel.onRemoveStatusDialog() },
+        onProgressUpdate = { viewModel.onUpdateProgress() },
+        onDismissProgressUpdate = { viewModel.onUpdateProgressDismiss() },
+        onSetProgress = { viewModel.setUserProgress(it) },
         onRatingClick = { viewModel.openRateDialog() },
         onRemoveRatingClick = { viewModel.removeRating() },
         onAddCollectionClick = { viewModel.openCollectionDialog() },
@@ -83,7 +96,8 @@ fun ObjectDetailScreen(
         onDraftReviewTextChange = { viewModel.onDraftReviewTextChange(it) },
         onConfirmReview = { viewModel.confirmAddReview() },
         onToggleCollectionSelection = { viewModel.toggleCollectionSelection(it) },
-        onConfirmCollectionSelection = { viewModel.confirmCollectionSelection() }
+        onConfirmCollectionSelection = { viewModel.confirmCollectionSelection() },
+        onNumberException = { viewModel.onNumberException() }
     )
 }
 
@@ -93,19 +107,29 @@ fun ObjectDetailContent(
     catalogObject: CatalogObject,
     isAuthorized: Boolean,
     userStatus: String?,
-    userProgress: String?,
+    userProgress: Int?,
     userRating: Int?,
     reviews: List<Review>,
     ratings: List<Rating>,
     bannerNotification: String?,
     isAddCollectionDialogShown: Boolean,
     isRateDialogShown: Boolean,
+    isUpdateStatusShown: Boolean,
+    isDialogRemoveStatusShown: Boolean,
+    isUpdateProgressShown: Boolean,
     isAddReviewDialogShown: Boolean,
     selectedRatingInDialog: Int,
     draftReviewText: String,
     userCollections: List<UserCollectionSelection>,
     onBackClick: () -> Unit,
+    onStatusUpdate: () -> Unit,
+    onDismissStatusUpdate: () -> Unit,
     onStatusToggle: (String) -> Unit,
+    onSetStatus: (String?) -> Unit,
+    onRemoveStatusDialog: () -> Unit,
+    onProgressUpdate: () -> Unit,
+    onDismissProgressUpdate: () -> Unit,
+    onSetProgress: (Int) -> Unit,
     onRatingClick: () -> Unit,
     onRemoveRatingClick: () -> Unit,
     onAddCollectionClick: () -> Unit,
@@ -119,7 +143,8 @@ fun ObjectDetailContent(
     onDraftReviewTextChange: (String) -> Unit,
     onConfirmReview: () -> Unit,
     onToggleCollectionSelection: (String) -> Unit,
-    onConfirmCollectionSelection: () -> Unit
+    onConfirmCollectionSelection: () -> Unit,
+    onNumberException: () -> Unit
 ) {
     var activeBanner by remember(bannerNotification) { mutableStateOf(bannerNotification) }
 
@@ -203,327 +228,532 @@ fun ObjectDetailContent(
             contentPadding = PaddingValues(vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-//            item {
-//                Row(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .padding(16.dp),
-//                    verticalAlignment = Alignment.CenterVertically
-//                ) {
-//                    Box(
-//                        modifier = Modifier
-//                            .width(140.dp)
-//                            .height(200.dp),
-//                        contentAlignment = Alignment.Center
-//                    ) {
-//                        Icon(
-//                            painter = painterResource(R.drawable.standard_object_cover),
-//                            contentDescription = null,
-//                            tint = Color.Unspecified,
-//                            modifier = Modifier.fillMaxSize()
-//                        )
-//                    }
-//
-//                    Spacer(modifier = Modifier.width(16.dp))
-//
-//                    Column(
-//                        modifier = Modifier.weight(1f),
-//                    )
-//                    {
-//                        Text(
-//                            text = catalogObject.category.uppercase(),
-//                            fontSize = 14.sp,
-//                            color = Color(0xFFA54E32),
-//                            textAlign = TextAlign.Center
-//                        )
-//                        Text(
-//                            text = catalogObject.title,
-//                            fontSize = 22.sp,
-//                            fontWeight = FontWeight.Bold,
-//                            color = Color(0xFF352A26),
-//                            textAlign = TextAlign.Center
-//                        )
-//                    }
-//                }
-//            }
-//
-//            item {
-//                Text(
-//                    text = catalogObject.description,
-//                    fontSize = 14.sp,
-//                    color = Color(0xFF5A4A42),
-//                    lineHeight = 20.sp
-//                )
-//            }
-//
-//            item {
-//                Surface(
-//                    modifier = Modifier
-//                        .wrapContentSize(),
-//                    shape = RoundedCornerShape(16.dp),
-//                    color = Color.White,
-//                    border = BorderStroke(1.dp, Color(0xFFEEDFD6))
-//                ) {
-//                    if (catalogObject.rating != null) {
-//                        Row(
-//                            modifier = Modifier
-//                                .fillMaxWidth()
-//                                .padding(horizontal = 12.dp, vertical = 8.dp),
-//                            horizontalArrangement = Arrangement.Start,
-//                            verticalAlignment = Alignment.CenterVertically
-//                        ) {
-//                            Icon(
-//                                painter = painterResource(R.drawable.object_rating),
-//                                contentDescription = null,
-//                                tint = Color.Unspecified
-//                            )
-//
-//                            Column(
-//                                modifier = Modifier.padding(start = 8.dp)
-//                            ) {
-//                                val formattedRating =
-//                                    catalogObject.rating.toString().replace('.', ',')
-//
-//                                Text(
-//                                    text = "$formattedRating / 10",
-//                                    fontSize = 24.sp,
-//                                    fontWeight = FontWeight.Bold,
-//                                    color = Color(0xFF352A26),
-//                                )
-//                                Text(
-//                                    text = "Полка - ${catalogObject.ratingsCount} действующих оценок",
-//                                    fontSize = 12.sp,
-//                                    color = Color(0xFF84736B)
-//                                )
-//                            }
-//                        }
-//                    }
-//                    else{
-//                        Row(
-//                            modifier = Modifier
-//                                .fillMaxWidth()
-//                                .padding(horizontal = 12.dp, vertical = 8.dp),
-//                            horizontalArrangement = Arrangement.Start,
-//                            verticalAlignment = Alignment.CenterVertically
-//                        ) {
-//                            Icon(
-//                                painter = painterResource(R.drawable.object_rating),
-//                                contentDescription = null,
-//                                tint = Color.Unspecified
-//                            )
-//
-//                            Column(
-//                                modifier = Modifier.padding(start = 8.dp)
-//                            ) {
-//                                Text(
-//                                    text = "Нет оценок",
-//                                    fontSize = 24.sp,
-//                                    fontWeight = FontWeight.Bold,
-//                                    color = Color(0xFF352A26),
-//                                )
-//                                Text(
-//                                    text = "Станьте первым, кто оценит",
-//                                    fontSize = 12.sp,
-//                                    color = Color(0xFF84736B)
-//                                )
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//
-//            item{
-//                Box(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .clip(RoundedCornerShape(16.dp))
-//                        .background(Color(0xFFDE6B3B)),
-//                ) {
-//                    Row(
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .clickable(onClick = { onAddCollectionClick() })
-//                            .padding(vertical = 16.dp, horizontal = 16.dp)
-//                            .background(Color.Transparent),
-//                        horizontalArrangement = Arrangement.Center,
-//
-//                    ){
-//                        Box(
-//                            modifier = Modifier.weight(1f)
-//                        ){
-//                            Icon(
-//                                painter = painterResource(R.drawable.plus),
-//                                contentDescription = null,
-//                                tint = Color.White
-//                            )
-//                        }
-//
-//
-//                        Text("Добавить в коллекцию",
-//                            color = Color.White,
-//                            fontSize = 14.sp,
-//                            fontWeight = FontWeight.SemiBold
-//                        )
-//
-//                        Spacer(
-//                            modifier = Modifier.weight(1f)
-//                        )
-//                    }
-//                }
-//            }
-//
-//            if (isAuthorized) {
-//                item {
-//                    Card(
-//                        modifier = Modifier
-//                            .fillMaxWidth(),
-//                        shape = RoundedCornerShape(16.dp),
-//                        colors = CardDefaults.cardColors(containerColor = Color.White),
-//                        border = BorderStroke(1.dp, Color(0xFFEEDFD6))
-//                    ) {
-//                        Column(
-//                            modifier = Modifier
-//                                .fillMaxWidth()
-//                                .padding(all = 16.dp),
-//                            verticalArrangement = Arrangement.spacedBy(8.dp),
-//                        ) {
-//                            Row(
-//                                modifier = Modifier
-//                                    .fillMaxWidth(),
-//                                horizontalArrangement = Arrangement.Start,
-//                                verticalAlignment = Alignment.CenterVertically
-//                            ) {
-//                                Icon(
-//                                    painter = painterResource(R.drawable.object_rating),
-//                                    contentDescription = null,
-//                                    tint = Color.Unspecified
-//                                )
-//
-//                                Column(
-//                                    modifier = Modifier.padding(start = 8.dp)
-//                                ) {
-//                                    Text(
-//                                        text = "Моя оценка",
-//                                        fontSize = 12.sp,
-//                                        color = Color(0xFF84736B)
-//                                    )
-//                                    var rating = ""
-//                                    var colorRating = Color.White
-//
-//                                    if (userRating != null) {
-//                                        rating = "$userRating / 10"
-//                                        colorRating = Color(0xFFA54E32)
-//                                    } else {
-//                                        rating = "Не оценено"
-//                                        colorRating = Color(0xFF84736B)
-//                                    }
-//                                    Text(
-//                                        text = rating,
-//                                        fontSize = 24.sp,
-//                                        fontWeight = FontWeight.Bold,
-//                                        color = colorRating,
-//                                    )
-//                                }
-//                            }
-//
-//                            if (userRating != null) {
-//                                Button(
-//                                    modifier = Modifier.fillMaxSize(),
-//                                    shape = RoundedCornerShape(16.dp),
-//                                    onClick = onRatingClick,
-//                                    colors = ButtonDefaults.buttonColors(
-//                                        containerColor = Color(
-//                                            0xFFFFE8DA
-//                                        )
-//                                    )
-//                                ) {
-//                                    Text(
-//                                        "Изменить оценку",
-//                                        color = Color(0xFFA54E32),
-//                                        fontSize = 14.sp,
-//                                        fontWeight = FontWeight.SemiBold
-//                                    )
-//                                }
-//
-//                                Button(
-//                                    modifier = Modifier.fillMaxSize(),
-//                                    shape = RoundedCornerShape(16.dp),
-//                                    onClick = onRemoveRatingClick,
-//                                    colors = ButtonDefaults.buttonColors(
-//                                        containerColor = Color(
-//                                            0xFFFFE8DA
-//                                        )
-//                                    )
-//                                ) {
-//                                    Text(
-//                                        "Удалить оценку",
-//                                        color = Color(0xFFA54E32),
-//                                        fontSize = 14.sp,
-//                                        fontWeight = FontWeight.SemiBold
-//                                    )
-//                                }
-//                            } else {
-//                                Button(
-//                                    modifier = Modifier
-//                                        .fillMaxSize()
-//                                        .height(50.dp),
-//                                    shape = RoundedCornerShape(12.dp),
-//                                    onClick = onRatingClick,
-//                                    colors = ButtonDefaults.buttonColors(
-//                                        containerColor = Color(
-//                                            0xFFFFE8DA
-//                                        )
-//                                    )
-//                                ) {
-//                                    Text(
-//                                        "Оценить объект",
-//                                        color = Color(0xFFA54E32),
-//                                        fontSize = 14.sp,
-//                                        fontWeight = FontWeight.SemiBold
-//                                    )
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//
-//            item {
-//                Card(
-//                    modifier = Modifier
-//                        .fillMaxWidth(),
-//                    shape = RoundedCornerShape(16.dp),
-//                    colors = CardDefaults.cardColors(containerColor = Color.White),
-//                    border = BorderStroke(1.dp, Color(0xFFEEDFD6))
-//                ) {
-//                    Column(
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .padding(all = 16.dp),
-//                        verticalArrangement = Arrangement.spacedBy(8.dp)
-//
-//                    ){
-//                        Text(
-//                            "Внешние оценки",
-//                            fontSize = 20.sp,
-//                            fontWeight = FontWeight.SemiBold,
-//                            color = Color(0xFF352A26)
-//                        )
-//
-//                        LazyRow(
-//                            modifier = Modifier,
-//                            horizontalArrangement = Arrangement.spacedBy(16.dp)
-//                        ) {
-//                            items(ratings) { rating ->
-//                                RatingCard(rating)
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-            if(isAuthorized){ //TODO: как проверить доступен ли статус для этого объекта
-                if(catalogObject.status != null){
-                    item{
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .width(140.dp)
+                            .height(200.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.standard_object_cover),
+                            contentDescription = null,
+                            tint = Color.Unspecified,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(16.dp))
+
+                    Column(
+                        modifier = Modifier.weight(1f),
+                    )
+                    {
+                        Text(
+                            text = catalogObject.category.name.uppercase(),
+                            fontSize = 14.sp,
+                            color = Color(0xFFA54E32),
+                            textAlign = TextAlign.Center
+                        )
+                        Text(
+                            text = catalogObject.title,
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF352A26),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+            }
+
+            item {
+                Text(
+                    text = catalogObject.description,
+                    fontSize = 14.sp,
+                    color = Color(0xFF5A4A42),
+                    lineHeight = 20.sp
+                )
+            }
+
+            item {
+                Surface(
+                    modifier = Modifier
+                        .wrapContentSize(),
+                    shape = RoundedCornerShape(16.dp),
+                    color = Color.White,
+                    border = BorderStroke(1.dp, Color(0xFFEEDFD6))
+                ) {
+                    if (catalogObject.rating != null) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 12.dp, vertical = 8.dp),
+                            horizontalArrangement = Arrangement.Start,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.object_rating),
+                                contentDescription = null,
+                                tint = Color.Unspecified
+                            )
+
+                            Column(
+                                modifier = Modifier.padding(start = 8.dp)
+                            ) {
+                                val formattedRating =
+                                    catalogObject.rating.toString().replace('.', ',')
+
+                                Text(
+                                    text = "$formattedRating / 10",
+                                    fontSize = 24.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF352A26),
+                                )
+                                Text(
+                                    text = "Полка - ${catalogObject.ratingsCount} действующих оценок",
+                                    fontSize = 12.sp,
+                                    color = Color(0xFF84736B)
+                                )
+                            }
+                        }
+                    } else {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 12.dp, vertical = 8.dp),
+                            horizontalArrangement = Arrangement.Start,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.object_rating),
+                                contentDescription = null,
+                                tint = Color.Unspecified
+                            )
+
+                            Column(
+                                modifier = Modifier.padding(start = 8.dp)
+                            ) {
+                                Text(
+                                    text = "Нет оценок",
+                                    fontSize = 24.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF352A26),
+                                )
+                                Text(
+                                    text = "Станьте первым, кто оценит",
+                                    fontSize = 12.sp,
+                                    color = Color(0xFF84736B)
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(Color(0xFFDE6B3B)),
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable(onClick = { onAddCollectionClick() })
+                            .padding(vertical = 16.dp, horizontal = 16.dp)
+                            .background(Color.Transparent),
+                        horizontalArrangement = Arrangement.Center,
+
+                        ) {
+                        Box(
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.plus),
+                                contentDescription = null,
+                                tint = Color.White
+                            )
+                        }
+
+
+                        Text(
+                            "Добавить в коллекцию",
+                            color = Color.White,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+
+                        Spacer(
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
+            }
+
+            if (isAuthorized) {
+                item {
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        border = BorderStroke(1.dp, Color(0xFFEEDFD6))
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(all = 16.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Start,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.object_rating),
+                                    contentDescription = null,
+                                    tint = Color.Unspecified
+                                )
+
+                                Column(
+                                    modifier = Modifier.padding(start = 8.dp)
+                                ) {
+                                    Text(
+                                        text = "Моя оценка",
+                                        fontSize = 12.sp,
+                                        color = Color(0xFF84736B)
+                                    )
+                                    var rating = ""
+                                    var colorRating = Color.White
+
+                                    if (userRating != null) {
+                                        rating = "$userRating / 10"
+                                        colorRating = Color(0xFFA54E32)
+                                    } else {
+                                        rating = "Не оценено"
+                                        colorRating = Color(0xFF84736B)
+                                    }
+                                    Text(
+                                        text = rating,
+                                        fontSize = 24.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = colorRating,
+                                    )
+                                }
+                            }
+
+                            if (userRating != null) {
+                                Button(
+                                    modifier = Modifier.fillMaxSize(),
+                                    shape = RoundedCornerShape(16.dp),
+                                    onClick = onRatingClick,
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color(
+                                            0xFFFFE8DA
+                                        )
+                                    )
+                                ) {
+                                    Text(
+                                        "Изменить оценку",
+                                        color = Color(0xFFA54E32),
+                                        fontSize = 14.sp,
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                }
+
+                                Button(
+                                    modifier = Modifier.fillMaxSize(),
+                                    shape = RoundedCornerShape(16.dp),
+                                    onClick = onRemoveRatingClick,
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color(
+                                            0xFFFFE8DA
+                                        )
+                                    )
+                                ) {
+                                    Text(
+                                        "Удалить оценку",
+                                        color = Color(0xFFA54E32),
+                                        fontSize = 14.sp,
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                }
+                            } else {
+                                Button(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .height(50.dp),
+                                    shape = RoundedCornerShape(12.dp),
+                                    onClick = onRatingClick,
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color(
+                                            0xFFFFE8DA
+                                        )
+                                    )
+                                ) {
+                                    Text(
+                                        "Оценить объект",
+                                        color = Color(0xFFA54E32),
+                                        fontSize = 14.sp,
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            item {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                    border = BorderStroke(1.dp, Color(0xFFEEDFD6))
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(all = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+
+                    ) {
+                        Text(
+                            "Внешние оценки",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color(0xFF352A26)
+                        )
+
+                        LazyRow(
+                            modifier = Modifier,
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            items(ratings) { rating ->
+                                RatingCard(rating)
+                            }
+                        }
+                    }
+                }
+            }
+            if (isAuthorized) {
+                if (catalogObject.category.listAvailableStatus.isNotEmpty()) {
+                    if (isUpdateStatusShown) {
+                        item {
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                shape = RoundedCornerShape(16.dp),
+                                colors = CardDefaults.cardColors(containerColor = Color.White),
+                                border = BorderStroke(1.dp, Color(0xFFEEDFD6))
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(all = 16.dp),
+                                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    Text(
+                                        "Что-то поменялось? Выберите новый статус:",
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Normal,
+                                        color = Color(0xFF84736B)
+                                    )
+
+                                    Column(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                                    ) {
+                                        catalogObject.category.listAvailableStatus.forEach { status ->
+                                            StatusItem(
+                                                status = status,
+                                                isSelected = status == userStatus,
+                                                onSelect = onStatusToggle
+                                            )
+                                        }
+                                    }
+
+                                    Button(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .height(50.dp),
+                                        shape = RoundedCornerShape(12.dp),
+                                        onClick = { onSetStatus(userStatus) },
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = Color(
+                                                0xFFFFE8DA
+                                            )
+                                        )
+                                    ) {
+                                        Text(
+                                            "Изменить статус",
+                                            color = Color(0xFFA54E32),
+                                            fontSize = 14.sp,
+                                            fontWeight = FontWeight.SemiBold
+                                        )
+                                    }
+
+                                    Button(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .height(50.dp),
+                                        shape = RoundedCornerShape(12.dp),
+                                        onClick = onRemoveStatusDialog,
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = Color(
+                                                0xFFFFE8DA
+                                            )
+                                        )
+                                    ) {
+                                        Text(
+                                            "Убрать статус",
+                                            color = Color(0xFFA54E32),
+                                            fontSize = 14.sp,
+                                            fontWeight = FontWeight.SemiBold
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        if (userStatus != null) {
+                            item {
+                                Card(
+                                    modifier = Modifier
+                                        .fillMaxWidth(),
+                                    shape = RoundedCornerShape(16.dp),
+                                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                                    border = BorderStroke(1.dp, Color(0xFFEEDFD6))
+                                ) {
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(all = 16.dp),
+                                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                                    ) {
+                                        Text(
+                                            "Мой статус",
+                                            fontSize = 13.sp,
+                                            fontWeight = FontWeight.Normal,
+                                            color = Color(0xFF84736B)
+                                        )
+
+                                        Text(
+                                            userStatus,
+                                            fontSize = 21.sp,
+                                            fontWeight = FontWeight.SemiBold,
+                                            color = Color(0xFFA54E32)
+                                        )
+
+                                        Button(
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .height(50.dp),
+                                            shape = RoundedCornerShape(12.dp),
+                                            onClick = onStatusUpdate,
+                                            colors = ButtonDefaults.buttonColors(
+                                                containerColor = Color(
+                                                    0xFFFFE8DA
+                                                )
+                                            )
+                                        ) {
+                                            Text(
+                                                "Изменить статус",
+                                                color = Color(0xFFA54E32),
+                                                fontSize = 14.sp,
+                                                fontWeight = FontWeight.SemiBold
+                                            )
+                                        }
+
+                                        Button(
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .height(50.dp),
+                                            shape = RoundedCornerShape(12.dp),
+                                            onClick = onRemoveStatusDialog,
+                                            colors = ButtonDefaults.buttonColors(
+                                                containerColor = Color(
+                                                    0xFFFFE8DA
+                                                )
+                                            )
+                                        ) {
+                                            Text(
+                                                "Убрать статус",
+                                                color = Color(0xFFA54E32),
+                                                fontSize = 14.sp,
+                                                fontWeight = FontWeight.SemiBold
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            item {
+                                Card(
+                                    modifier = Modifier
+                                        .fillMaxWidth(),
+                                    shape = RoundedCornerShape(16.dp),
+                                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                                    border = BorderStroke(1.dp, Color(0xFFEEDFD6))
+                                ) {
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(all = 16.dp),
+                                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                                    ) {
+                                        Text(
+                                            "Мой статус",
+                                            fontSize = 13.sp,
+                                            fontWeight = FontWeight.Normal,
+                                            color = Color(0xFF84736B)
+                                        )
+
+                                        Text(
+                                            "Не установлен",
+                                            fontSize = 21.sp,
+                                            fontWeight = FontWeight.SemiBold,
+                                            color = Color(0xFF84736B)
+                                        )
+
+                                        Button(
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .height(50.dp),
+                                            shape = RoundedCornerShape(12.dp),
+                                            onClick = onStatusUpdate,
+                                            colors = ButtonDefaults.buttonColors(
+                                                containerColor = Color(
+                                                    0xFFFFE8DA
+                                                )
+                                            )
+                                        ) {
+                                            Text(
+                                                "Изменить статус",
+                                                color = Color(0xFFA54E32),
+                                                fontSize = 14.sp,
+                                                fontWeight = FontWeight.SemiBold
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (catalogObject.category.isProgressAvailable) {
+                    item {
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth(),
@@ -536,59 +766,247 @@ fun ObjectDetailContent(
                                     .fillMaxWidth()
                                     .padding(all = 16.dp),
                                 verticalArrangement = Arrangement.spacedBy(8.dp)
-                            ){
+                            ) {
                                 Text(
-                                    "Мой статус",
+                                    "Текущий прогресс",
                                     fontSize = 13.sp,
                                     fontWeight = FontWeight.Normal,
                                     color = Color(0xFF84736B)
                                 )
 
-                                Text(
-                                    catalogObject.status,
-                                    fontSize = 21.sp,
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = Color(0xFFA54E32)
-                                )
-
-                                Button(
+                                Row(
                                     modifier = Modifier
-                                        .fillMaxSize()
-                                        .height(50.dp),
-                                    shape = RoundedCornerShape(12.dp),
-                                    onClick = {}, //TODO: функционал кнопки
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color(
-                                            0xFFFFE8DA
-                                        )
-                                    )
-                                ) {
+                                        .fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                )
+                                {
                                     Text(
-                                        "Изменить статус",
-                                        color = Color(0xFFA54E32),
-                                        fontSize = 14.sp,
-                                        fontWeight = FontWeight.SemiBold
+                                        "$userProgress из ${catalogObject.limitProgress} ${catalogObject.category.unitProgress}",
+                                        fontSize = 15.sp,
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = Color(0xFF352A26)
+                                    )
+
+                                    Text(
+                                        "${(userProgress ?: 0) * 100 / (catalogObject.limitProgress ?: 100)}%",
+                                        fontSize = 13.sp,
+                                        fontWeight = FontWeight.Normal,
+                                        color = Color(0xFF84736B)
                                     )
                                 }
 
-                                Button(
+                                LinearProgressIndicator(
+                                    progress = {
+                                        (userProgress ?: 0).toFloat() / (catalogObject.limitProgress
+                                            ?: 100).toFloat()
+                                    },
                                     modifier = Modifier
-                                        .fillMaxSize()
-                                        .height(50.dp),
-                                    shape = RoundedCornerShape(12.dp),
-                                    onClick = {  },  //TODO: функционал кнопки
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color(
-                                            0xFFFFE8DA
-                                        )
-                                    )
-                                ) {
+                                        .fillMaxWidth()
+                                        .height(8.dp)
+                                        .clip(RoundedCornerShape(50)),
+                                    color = Color(0xFFDE6B3B),
+                                    trackColor = Color(0xFFFFE8DA),
+                                    gapSize = 0.dp,
+                                    drawStopIndicator = {}
+                                )
+
+                                if(isUpdateProgressShown){
                                     Text(
-                                        "Убрать статус",
-                                        color = Color(0xFFA54E32),
-                                        fontSize = 14.sp,
-                                        fontWeight = FontWeight.SemiBold
+                                        "Установите прогресс",
+                                        fontSize = 20.sp,
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = Color(0xFF352A26)
                                     )
+                                    var chosen by rememberSaveable { mutableStateOf(false) }
+                                    var progressPercent by rememberSaveable { mutableStateOf(((userProgress ?: 0) * 100  / (catalogObject.limitProgress ?: 100))) }
+                                    var progress by rememberSaveable{ mutableStateOf(userProgress ?: 0) }
+
+                                    var line by rememberSaveable { mutableStateOf(if (chosen) progressPercent.toString() else progress.toString()) }
+
+
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth(),
+
+                                    ){
+                                        Button(
+                                            modifier = Modifier
+                                                .weight(1f),
+                                            shape = RoundedCornerShape(12.dp),
+                                            onClick = {
+                                                if(chosen)
+                                                {
+                                                    chosen = false
+                                                    line = progress.toString()
+                                                }
+                                            },
+                                            colors = ButtonDefaults.buttonColors(
+                                                containerColor = if (chosen) Color.White else Color (0xFFFFE8DA)
+                                            )
+                                        ) {
+                                            Text(
+                                                "Единицы",
+                                                fontSize = 13.sp,
+                                                fontWeight = FontWeight.Normal,
+                                                color = Color(0xFFA54E32)
+                                            )
+                                        }
+                                        Button(
+                                            modifier = Modifier
+                                                .weight(1f),
+                                            shape = RoundedCornerShape(12.dp),
+                                            onClick = {
+                                                if(!chosen){
+                                                    line = progressPercent.toString()
+                                                    chosen = true
+                                                }
+                                            },
+                                            colors = ButtonDefaults.buttonColors(
+                                                containerColor = if (!chosen) Color.White else Color (0xFFFFE8DA)
+                                            )
+                                        ) {
+                                            Text(
+                                                "Проценты",
+                                                fontSize = 13.sp,
+                                                fontWeight = FontWeight.Normal,
+                                                color = Color(0xFFA54E32)
+                                            )
+                                        }
+                                    }
+
+                                    Text(
+                                        "Прогресс, ${if (chosen) "%" else catalogObject.category.unitProgress}",
+                                        color = Color(0xFF352A26),
+                                        fontSize = 14.sp,
+                                        fontWeight = FontWeight.Medium
+                                    )
+
+
+                                    val inputTextStyle = TextStyle(
+                                        fontSize = 15.sp,
+                                        fontWeight = FontWeight.Normal,
+                                        color = Color(0xFF352A26)
+                                    )
+
+                                    OutlinedTextField(
+                                        value = line,
+                                        onValueChange = {
+                                            try {
+                                                var x = if(it.isNotEmpty()) it.toInt() else 0
+                                                
+                                                if (chosen) {
+                                                    progressPercent = x
+                                                    progress = (catalogObject.limitProgress
+                                                        ?: 100) * progressPercent / 100
+                                                } else {
+                                                    progress = x
+                                                    progressPercent = (progress
+                                                         * 100 / (catalogObject.limitProgress
+                                                        ?: 100))
+                                                }
+
+                                                if(progress > (catalogObject.limitProgress
+                                                        ?: 100) || progress < 0 || progressPercent > 100 || progressPercent < 0
+                                                ){
+                                                    x = line.toInt()
+                                                    if (chosen) {
+                                                        progressPercent = x
+                                                        progress = (catalogObject.limitProgress
+                                                            ?: 100) * progressPercent / 100
+                                                    } else {
+                                                        progress = x
+                                                        progressPercent = (progress
+                                                                * 100 / (catalogObject.limitProgress
+                                                            ?: 100))
+                                                    }
+                                                }
+                                                else{
+                                                    line = it
+                                                }
+                                            }
+                                            catch (_: NumberFormatException){
+                                                if(it.isNotEmpty()){
+                                                    onNumberException()
+                                                }
+                                            }
+                                        },
+                                        placeholder = { Text("Введите число от 0 до ${if(chosen) 100 else catalogObject.limitProgress ?: 100}", color = Color(0xFF84736B)) },
+                                        textStyle = inputTextStyle,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(52.dp),
+                                        shape = RoundedCornerShape(12.dp),
+                                        colors = OutlinedTextFieldDefaults.colors(
+                                            focusedBorderColor = Color(0xFFF5C4A8),
+                                            unfocusedBorderColor = Color(0xFFF5C4A8),
+                                            focusedContainerColor = Color.White,
+                                            unfocusedContainerColor = Color.White,
+                                            focusedTextColor = Color(0xFF352A26),
+                                            unfocusedTextColor = Color(0xFF352A26)
+                                        ),
+                                        singleLine = true
+                                    )
+
+                                    Button(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .height(50.dp),
+                                        shape = RoundedCornerShape(12.dp),
+                                        onClick = { onSetProgress(progress) },
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = Color(
+                                                0xFFDE6B3B
+                                            )
+                                        )
+                                    ) {
+                                        Text(
+                                            "Сохранить прогресс",
+                                            color = Color.White,
+                                            fontSize = 14.sp,
+                                            fontWeight = FontWeight.SemiBold
+                                        )
+                                    }
+
+                                    Button(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .height(50.dp),
+                                        shape = RoundedCornerShape(12.dp),
+                                        onClick = onDismissProgressUpdate,
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = Color(
+                                                0xFFFFE8DA
+                                            )
+                                        )
+                                    ) {
+                                        Text(
+                                            "Отмена",
+                                            color = Color(0xFFA54E32),
+                                            fontSize = 14.sp,
+                                            fontWeight = FontWeight.SemiBold
+                                        )
+                                    }
+                                }
+                                else{
+                                    Button(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .height(50.dp),
+                                        shape = RoundedCornerShape(12.dp),
+                                        onClick = onProgressUpdate,
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = Color(
+                                                0xFFFFE8DA
+                                            )
+                                        )
+                                    ) {
+                                        Text(
+                                            "Изменить прогресс",
+                                            color = Color(0xFFA54E32),
+                                            fontSize = 14.sp,
+                                            fontWeight = FontWeight.SemiBold
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -617,12 +1035,11 @@ fun ObjectDetailContent(
                 }
             }
 
-            item{
+            item {
                 Button(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(50.dp)
-                        ,
+                        .height(50.dp),
                     onClick = onAddReviewClick,
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
@@ -650,22 +1067,69 @@ fun ObjectDetailContent(
 }
 
 @Composable
+fun StatusItem(
+    status: String,
+    isSelected: Boolean,
+    onSelect: (String) -> Unit
+) {
+    val backgroundColor = if (isSelected) Color(0xFFFFF1E8) else Color.White
+    val borderColor = if (isSelected) Color(0xFFDE6B3B) else Color(0xFFEEDFD6)
+    val contentColor = Color(0xFF352A26)
+
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .clickable { onSelect(status) },
+        shape = RoundedCornerShape(12.dp),
+        color = backgroundColor,
+        border = BorderStroke(1.dp, borderColor)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            RadioButton(
+                selected = isSelected,
+                onClick = { onSelect(status) },
+                colors = RadioButtonDefaults.colors(
+                    selectedColor = Color(0xFF352A26),
+                    unselectedColor = Color(0xFF352A26)
+                )
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Text(
+                text = status,
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Medium,
+                color = contentColor
+            )
+        }
+    }
+}
+
+@Composable
 fun RatingCard(
     rating: Rating
-){
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF1E8)),
         border = BorderStroke(1.dp, Color(0xFFEEDFD6)),
-    ){
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(all = 12.dp),
 
-        ) {
+            ) {
             Text(
                 rating.platformName,
                 color = Color(0xFFA54E32),
@@ -754,7 +1218,7 @@ fun ReviewCard(
                 color = Color(0xFF84736B),
             )
 
-            if(review.dateChanged != null){
+            if (review.dateChanged != null) {
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
@@ -1040,94 +1504,120 @@ fun ObjectNotFoundScreen(
     }
 }
 
-@Preview(name = "1. Authorized User", showBackground = true)
-@Composable
-fun Preview_ObjectDetail_Authorized() {
-    ShelfTheme {
-        ObjectDetailContent(
-            catalogObject = mockCatalogObjects[0],
-            isAuthorized = true,
-            userStatus = "Читаю",
-            userProgress = "120 из 350 стр.",
-            userRating = 9,
-            reviews = listOf(
-                Review("1", "Анна Смирнова", rating = 9, dateCreated = "24 октября 2026", dateChanged = null, text = "Великолепное произведение! Захватывает с первых страниц и держит в напряжении до самого конца.", likesCount = 14),
-                Review("2", "Максим Петров", rating = 8, dateCreated = "20 октября 2026", dateChanged = "30 октября 2026", text = "Очень глубокий смысл, заставляет задуматься о многом. Рекомендую к прочтению каждому.", likesCount = 8)
-            ),
-            ratings = listOf(
-                Rating(rating = 8.8, "Кинопоиск"),
-                Rating(rating = 6.1, "IMDb")
-            ),
-            bannerNotification = null,
-            isAddCollectionDialogShown = false,
-            isRateDialogShown = false,
-            isAddReviewDialogShown = false,
-            selectedRatingInDialog = 9,
-            draftReviewText = "",
-            userCollections = emptyList(),
-            onBackClick = {},
-            onStatusToggle = {},
-            onRatingClick = {},
-            onRemoveRatingClick = {},
-            onAddCollectionClick = {},
-            onAddReviewClick = {},
-            onDismissBanner = {},
-            onDismissCollectionDialog = {},
-            onDismissRateDialog = {},
-            onDismissReviewDialog = {},
-            onSelectRatingInDialog = {},
-            onConfirmRating = {},
-            onDraftReviewTextChange = {},
-            onConfirmReview = {},
-            onToggleCollectionSelection = {},
-            onConfirmCollectionSelection = {}
-        )
-    }
-}
+//@Preview(name = "1. Authorized User", showBackground = true, heightDp = 2000)
+//@Composable
+//fun Preview_ObjectDetail_Authorized() {
+//    ShelfTheme {
+//        ObjectDetailContent(
+//            catalogObject = mockCatalogObjects[0],
+//            isAuthorized = true,
+//            userStatus = "Читаю",
+//            userProgress = 32,
+//            userRating = 9,
+//            reviews = listOf(
+//                Review(
+//                    "1",
+//                    "Анна Смирнова",
+//                    rating = 9,
+//                    dateCreated = "24 октября 2026",
+//                    dateChanged = null,
+//                    text = "Великолепное произведение! Захватывает с первых страниц и держит в напряжении до самого конца.",
+//                    likesCount = 14
+//                ),
+//                Review(
+//                    "2",
+//                    "Максим Петров",
+//                    rating = 8,
+//                    dateCreated = "20 октября 2026",
+//                    dateChanged = "30 октября 2026",
+//                    text = "Очень глубокий смысл, заставляет задуматься о многом. Рекомендую к прочтению каждому.",
+//                    likesCount = 8
+//                )
+//            ),
+//            ratings = listOf(
+//                Rating(rating = 8.8, "Кинопоиск"),
+//                Rating(rating = 6.1, "IMDb")
+//            ),
+//            bannerNotification = null,
+//            isAddCollectionDialogShown = false,
+//            isRateDialogShown = false,
+//            isAddReviewDialogShown = false,
+//            selectedRatingInDialog = 9,
+//            draftReviewText = "",
+//            userCollections = emptyList(),
+//            onBackClick = {},
+//            onStatusToggle = {},
+//            onRatingClick = {},
+//            onRemoveRatingClick = {},
+//            onAddCollectionClick = {},
+//            onAddReviewClick = {},
+//            onDismissBanner = {},
+//            onDismissCollectionDialog = {},
+//            onDismissRateDialog = {},
+//            onDismissReviewDialog = {},
+//            onSelectRatingInDialog = {},
+//            onConfirmRating = {},
+//            onDraftReviewTextChange = {},
+//            onConfirmReview = {},
+//            onToggleCollectionSelection = {},
+//            onConfirmCollectionSelection = {}
+//        )
+//    }
+//}
+//
+//@Preview(name = "2. Unauthorized User", showBackground = true)
+//@Composable
+//fun Preview_ObjectDetail_Unauthorized() {
+//    ShelfTheme {
+//        ObjectDetailContent(
+//            catalogObject = mockCatalogObjects[0],
+//            isAuthorized = false,
+//            userStatus = null,
+//            userProgress = null,
+//            userRating = null,
+//            reviews = emptyList(),
+//            ratings = emptyList(),
+//            bannerNotification = null,
+//            isAddCollectionDialogShown = true,
+//            isRateDialogShown = false,
+//            isAddReviewDialogShown = false,
+//            selectedRatingInDialog = 8,
+//            draftReviewText = "",
+//            userCollections = emptyList(),
+//            onBackClick = {},
+//            onStatusToggle = {},
+//            onRatingClick = {},
+//            onRemoveRatingClick = {},
+//            onAddCollectionClick = {},
+//            onAddReviewClick = {},
+//            onDismissBanner = {},
+//            onDismissCollectionDialog = {},
+//            onDismissRateDialog = {},
+//            onDismissReviewDialog = {},
+//            onSelectRatingInDialog = {},
+//            onConfirmRating = {},
+//            onDraftReviewTextChange = {},
+//            onConfirmReview = {},
+//            onToggleCollectionSelection = {},
+//            onConfirmCollectionSelection = {}
+//        )
+//    }
+//}
+//
+//@Preview(name = "3. Экран: Объект не найден", showBackground = true)
+//@Composable
+//fun Preview_ObjectNotFound() {
+//    ShelfTheme {
+//        ObjectNotFoundScreen("Каталог", onBackClick = {})
+//    }
+//}
 
-@Preview(name = "2. Unauthorized User", showBackground = true)
+@Preview(name = "4. Превью с viewModel", showBackground = true, heightDp = 2000)
 @Composable
-fun Preview_ObjectDetail_Unauthorized() {
+fun Preview_All() {
     ShelfTheme {
-        ObjectDetailContent(
-            catalogObject = mockCatalogObjects[0],
-            isAuthorized = false,
-            userStatus = null,
-            userProgress = null,
-            userRating = null,
-            reviews = emptyList(),
-            ratings = emptyList(),
-            bannerNotification = null,
-            isAddCollectionDialogShown = true,
-            isRateDialogShown = false,
-            isAddReviewDialogShown = false,
-            selectedRatingInDialog = 8,
-            draftReviewText = "",
-            userCollections = emptyList(),
-            onBackClick = {},
-            onStatusToggle = {},
-            onRatingClick = {},
-            onRemoveRatingClick = {},
-            onAddCollectionClick = {},
-            onAddReviewClick = {},
-            onDismissBanner = {},
-            onDismissCollectionDialog = {},
-            onDismissRateDialog = {},
-            onDismissReviewDialog = {},
-            onSelectRatingInDialog = {},
-            onConfirmRating = {},
-            onDraftReviewTextChange = {},
-            onConfirmReview = {},
-            onToggleCollectionSelection = {},
-            onConfirmCollectionSelection = {}
-        )
-    }
-}
+        ObjectDetailScreen {
 
-@Preview(name = "3. Экран: Объект не найден", showBackground = true, device = "id:pixel_5")
-@Composable
-fun Preview_ObjectNotFound() {
-    ShelfTheme {
-        ObjectNotFoundScreen("Каталог", onBackClick = {})
+        }
     }
 }

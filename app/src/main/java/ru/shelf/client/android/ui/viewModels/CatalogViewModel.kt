@@ -67,7 +67,7 @@ class CatalogViewModel : ViewModel() {
         val query = _uiState.value.searchQuery
 
         val filtered = all.filter { item ->
-            (category == "Все разделы" || item.category.equals(category, ignoreCase = true)) &&
+            (category == "Все разделы" || item.category.name.equals(category, ignoreCase = true)) &&
             (query.isBlank() || item.title.contains(query, ignoreCase = true))
         }
 
