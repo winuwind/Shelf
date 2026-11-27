@@ -21,6 +21,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import ru.shelf.client.android.data.ApplicationStatus
 import ru.shelf.client.android.data.mockApplicationPiranesi
 import ru.shelf.client.android.data.mockApplicationsList
 import ru.shelf.client.android.data.mockUserMe
@@ -33,7 +34,7 @@ import ru.shelf.client.android.ui.screens.objects.SuggestObjectSuccessScreen
 import ru.shelf.client.android.ui.screens.objects.MyApplicationsScreen
 import ru.shelf.client.android.ui.screens.objects.ApplicationDetailScreen
 import ru.shelf.client.android.ui.screens.objects.ApplicationDetail
-import ru.shelf.client.android.ui.screens.objects.ApplicationStatus
+
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale

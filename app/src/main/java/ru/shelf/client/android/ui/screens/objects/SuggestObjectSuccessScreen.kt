@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.shelf.client.android.R
+import ru.shelf.client.android.data.ApplicationStatus
 
 @Composable
 fun SuggestObjectSuccessScreen(
@@ -127,11 +128,6 @@ fun SuggestObjectSuccessScreen(
     }
 }
 
-enum class ApplicationStatus(val title: String, val bgColor: Color, val textColor: Color) {
-    MODERATION("На модерации", Color(0xFFFFE8DA), Color(0xFFA6541F)),
-    APPROVED("Одобрена", Color(0xFFEAF5EC), Color(0xFF286542)),
-    REJECTED("Отклонена", Color(0xFFFFF0EE), Color(0xFFB43D32))
-}
 
 @Composable
 fun ApplicationCard(

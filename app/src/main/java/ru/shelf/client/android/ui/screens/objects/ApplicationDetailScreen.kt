@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.shelf.client.android.R
+import ru.shelf.client.android.data.ApplicationStatus
 
 data class ApplicationDetail(
     val id: String,

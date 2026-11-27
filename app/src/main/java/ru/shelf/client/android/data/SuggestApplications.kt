@@ -2,7 +2,6 @@ package ru.shelf.client.android.data
 
 import androidx.compose.runtime.mutableStateListOf
 import ru.shelf.client.android.ui.screens.objects.ApplicationDetail
-import ru.shelf.client.android.ui.screens.objects.ApplicationStatus
 
 val mockApplicationPiranesi = ApplicationDetail(
     id = "1042",
