@@ -224,37 +224,34 @@ fun SearchInitialStateView(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        val iconRes = if (selectedTab == SearchTab.USERS) {
-            R.drawable.search_username_status
-        } else {
-            R.drawable.search
-        }
-
-        val hintText = if (selectedTab == SearchTab.USERS) {
-            "Введите имя пользователя для поиска"
-        } else {
-            "Введите название сообщества для поиска"
-        }
-        
-        Box(
-            modifier = Modifier
-                .size(72.dp)
-                .clip(CircleShape)
-                .background(Color(0xFFFCE9DE)),
-            contentAlignment = Alignment.Center
-        ) {
+        if (selectedTab == SearchTab.USERS) {
             Icon(
-                painter = painterResource(id = iconRes),
+                painter = painterResource(id = R.drawable.search_username_status),
                 contentDescription = null,
                 tint = Color.Unspecified,
-                modifier = Modifier.size(32.dp)
+                modifier = Modifier.size(56.dp)
             )
+        } else {
+            Box(
+                modifier = Modifier
+                    .size(72.dp)
+                    .clip(CircleShape)
+                    .background(Color(0xFFFCE9DE)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.search),
+                    contentDescription = null,
+                    tint = Color.Unspecified,
+                    modifier = Modifier.size(32.dp)
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
-            text = hintText,
+            text = "Введите не менее 2 символов для поиска",
             fontSize = 15.sp,
             fontWeight = FontWeight.SemiBold,
             color = Color(0xFF352A26),

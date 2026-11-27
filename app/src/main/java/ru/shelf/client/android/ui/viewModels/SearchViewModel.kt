@@ -49,7 +49,7 @@ data class SearchUiState(
     val isError: Boolean = false
 ) {
     val isSearchStarted: Boolean
-        get() = searchQuery.trim().isNotEmpty()
+        get() = searchQuery.trim().length >= 2
 
     val isResultsEmpty: Boolean
         get() = isSearchStarted && ((selectedTab == SearchTab.USERS && usersResult.isEmpty()) ||
@@ -87,7 +87,7 @@ class SearchViewModel : ViewModel() {
     private fun performSearch() {
         val query = _uiState.value.searchQuery.trim()
 
-        if (query.isEmpty()) {
+        if (query.length < 2) {
             _uiState.update {
                 it.copy(
                     usersResult = emptyList(),
