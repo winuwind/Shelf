@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="faq_answers">
+        <item>Проверьте папку «Спам» или «Рассылки». Если письма нет, попробуйте &lt;a href="restore_access">восстановить доступ&lt;/a> заново через несколько минут.</item>
+        <item>Войдите по имени пользователя. Если вы не помните и его, обратитесь в &lt;a href="support">службу поддержки&lt;/a>.</item>
+        <item>Вы можете воспользоваться функцией &lt;a href="restore_access">«Восстановить»&lt;/a> на экране входа, указав e-mail от вашей учетной записи.</item>
+    </string-array>
+    <string-array name="faq_questions">
+        <item>Не пришло письмо с подтверждением</item>
+        <item>Не помню адрес электронной почты</item>
+        <item>Как изменить пароль?</item>
+    </string-array>
+    <color name="black">#FF000000</color>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="white">#FFFFFFFF</color>
+    <string name="app_name">Shelf</string>
+    <style name="Theme.Shelf" parent="android:Theme.Material.Light.NoActionBar"/>
+</resources>

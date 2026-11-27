@@ -12,6 +12,22 @@ enum class FriendRequestStatus {
     INCOMING
 }
 
+enum class DeviceType {
+    COMPUTER,
+    PHONE,
+    TABLET,
+    UNKNOWN
+}
+
+data class UserSession(
+    val id: String,
+    val deviceName: String,
+    val browser: String,
+    val date: String,
+    val isCurrent: Boolean = false,
+    val deviceType: DeviceType
+)
+
 data class Friend(
     val id: String = "",
     val name: String,
@@ -144,4 +160,36 @@ val mockUserDeleted = mockUserAnna.copy(
     isBannedOrDeleted = true,
     name = "Удаленный аккаунт",
     bio = ""
+)
+
+val mockSessions = listOf(
+    UserSession(
+        id = "1",
+        deviceName = "Компьютер",
+        browser = "Chrome",
+        date = "20.10.2026 14:52",
+        isCurrent = true,
+        deviceType = DeviceType.COMPUTER
+    ),
+    UserSession(
+        id = "2",
+        deviceName = "Телефон",
+        browser = "Safari",
+        date = "20.10.2026 12:38",
+        deviceType = DeviceType.PHONE
+    ),
+    UserSession(
+        id = "3",
+        deviceName = "Планшет",
+        browser = "Firefox",
+        date = "19.10.2026 18:06",
+        deviceType = DeviceType.TABLET
+    ),
+    UserSession(
+        id = "4",
+        deviceName = "Неизвестное устройство",
+        browser = "Неизвестный браузер",
+        date = "17.10.2026 09:14",
+        deviceType = DeviceType.UNKNOWN
+    )
 )

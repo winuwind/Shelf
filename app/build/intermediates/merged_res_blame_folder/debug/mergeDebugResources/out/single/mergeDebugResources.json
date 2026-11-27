@@ -1,0 +1,482 @@
+[
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_ic_launcher_background.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/ic_launcher_background.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_standard_banner.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/standard_banner.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_profile_not_found.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/profile_not_found.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_profile_write_message.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/profile_write_message.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_feed_previous_photograph.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/feed_previous_photograph.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_object_collection_unavailable.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/object_collection_unavailable.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_feed_catalog_menu.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/feed_catalog_menu.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_community_no_publications.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/community_no_publications.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_checking_mail.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/checking_mail.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_profile_add_friend.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/profile_add_friend.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_community_private.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/community_private.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_profile_privacy_everything.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/profile_privacy_everything.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_standard_object_cover.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/standard_object_cover.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_feed_dislike.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/feed_dislike.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_profile_privacy_friends_only.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/profile_privacy_friends_only.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_feed_like.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/feed_like.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_collection_access_settings.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/collection_access_settings.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/xml_backup_rules.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/xml/backup_rules.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_settings_email_security.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/settings_email_security.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_highlighted_messages_main_panel.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/highlighted_messages_main_panel.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_settings_device_type_computer.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/settings_device_type_computer.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_feed_shelf.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/feed_shelf.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_feed_post_menu.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/feed_post_menu.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/mipmap-anydpi_ic_launcher_round.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/mipmap-anydpi/ic_launcher_round.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_settings_info_message_blocking.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/settings_info_message_blocking.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_feed_illustration_loading_error.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/feed_illustration_loading_error.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_feed_comment.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/feed_comment.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_up_arrow.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/up_arrow.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_settings_device_type_tablet.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/settings_device_type_tablet.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_highlighted_search_main_panel.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/highlighted_search_main_panel.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/xml_data_extraction_rules.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/xml/data_extraction_rules.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_back_arrow_to_certain_screen.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/back_arrow_to_certain_screen.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_seetings_security.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/seetings_security.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/mipmap-mdpi_ic_launcher_round.webp.flat",
+        "source": "ru.shelf.client.android.app-main-46:/mipmap-mdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_settings_edit_banner.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/settings_edit_banner.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_down_arrow.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/down_arrow.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_profile_privacy_only_me.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/profile_privacy_only_me.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/mipmap-xhdpi_ic_launcher_round.webp.flat",
+        "source": "ru.shelf.client.android.app-main-46:/mipmap-xhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_feed_no_more_posts.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/feed_no_more_posts.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
+        "source": "ru.shelf.client.android.app-main-46:/mipmap-xxxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/mipmap-mdpi_ic_launcher.webp.flat",
+        "source": "ru.shelf.client.android.app-main-46:/mipmap-mdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_cancel.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/cancel.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_object_collection_empty.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/object_collection_empty.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_profile_main_panel.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/profile_main_panel.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_feed_catalog_object.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/feed_catalog_object.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_access_message_send.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/access_message_send.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_community_standard_banner.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/community_standard_banner.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_profile_ban.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/profile_ban.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_feed_info_recommend_post.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/feed_info_recommend_post.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_feed_collection.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/feed_collection.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_object_review_unavailable.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/object_review_unavailable.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_settings_ending_sessions_error.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/settings_ending_sessions_error.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_hide_password_or_message.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/hide_password_or_message.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_back_button.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/back_button.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_friend_no_incoming_friend_requests.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/friend_no_incoming_friend_requests.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/mipmap-xxxhdpi_ic_launcher.webp.flat",
+        "source": "ru.shelf.client.android.app-main-46:/mipmap-xxxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_highlighted_feed_main_panel.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/highlighted_feed_main_panel.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_profile_remove_from_friends.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/profile_remove_from_friends.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_settings_log_out_in_profile.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/settings_log_out_in_profile.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_triangle_alert.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/triangle_alert.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_feed_search.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/feed_search.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
+        "source": "ru.shelf.client.android.app-main-46:/mipmap-xxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_search_no_users_found.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/search_no_users_found.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/mipmap-hdpi_ic_launcher_round.webp.flat",
+        "source": "ru.shelf.client.android.app-main-46:/mipmap-hdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_feed_bell.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/feed_bell.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_message_no_messages_yet.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/message_no_messages_yet.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_profile_settings_menu.png.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/profile_settings_menu.png"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_settings_ending_sessions.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/settings_ending_sessions.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_message_inactive_send_button.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/message_inactive_send_button.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_object_rating.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/object_rating.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_system_action_failed.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/system_action_failed.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/mipmap-xxhdpi_ic_launcher.webp.flat",
+        "source": "ru.shelf.client.android.app-main-46:/mipmap-xxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_feed_additional_photos.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/feed_additional_photos.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_profile_friend_requesr_sent.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/profile_friend_requesr_sent.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_message_active_send_button.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/message_active_send_button.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_right_arrow.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/right_arrow.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_search_username_status.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/search_username_status.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_oops_message_send.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/oops_message_send.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_search.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/search.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_friend_no_friend_requests_sent.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/friend_no_friend_requests_sent.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_feed_main_panel.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/feed_main_panel.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_profile_settings.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/profile_settings.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_community_data_unavailable.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/community_data_unavailable.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_plus.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/plus.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_standard_avatar.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/standard_avatar.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_settings_edit_avatar.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/settings_edit_avatar.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_collection_edit.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/collection_edit.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_feed_recommendations.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/feed_recommendations.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_feed_next_photograph.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/feed_next_photograph.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_failed_load_blocked_users.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/failed_load_blocked_users.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_repeat.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/repeat.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_feed_wifi_off.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/feed_wifi_off.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_friend_user_has_no_friends.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/friend_user_has_no_friends.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/mipmap-hdpi_ic_launcher.webp.flat",
+        "source": "ru.shelf.client.android.app-main-46:/mipmap-hdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_profile_complain.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/profile_complain.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_profile_accept_a_friend.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/profile_accept_a_friend.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_settings_blocked_users.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/settings_blocked_users.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_community_application_status.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/community_application_status.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_ic_launcher_foreground_monochrome.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/ic_launcher_foreground_monochrome.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_feed_popular_posts.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/feed_popular_posts.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_community_create_publication.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/community_create_publication.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_community_management.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/community_management.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_error_message_send.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/error_message_send.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_check.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/check.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "ru.shelf.client.android.app-main-46:/mipmap-xhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_feed_illustration_new_feed.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/feed_illustration_new_feed.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_settings_no_blocked_users.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/settings_no_blocked_users.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_collection_delete.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/collection_delete.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_object_unavailable.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/object_unavailable.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_community_not_found_and_standard_avatar.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/community_not_found_and_standard_avatar.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_settings_device_type_unknown.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/settings_device_type_unknown.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_highlighted_profile_main_panel.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/highlighted_profile_main_panel.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_show_password.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/show_password.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_search_and_collection_errors.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/search_and_collection_errors.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_settings_password_security.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/settings_password_security.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_collection_no_objects_in.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/collection_no_objects_in.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_settings_device_type_phone.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/settings_device_type_phone.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/mipmap-anydpi_ic_launcher.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/mipmap-anydpi/ic_launcher.xml"
+    },
+    {
+        "merged": "ru.shelf.client.android.app-debug-44:/drawable_messages_main_panel.xml.flat",
+        "source": "ru.shelf.client.android.app-main-46:/drawable/messages_main_panel.xml"
+    }
+]
